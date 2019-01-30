@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
 from rest_framework import routers
-
 from .index import index
+from imago_mundi_app import views
 
 api_router = routers.DefaultRouter()  # register viewsets with this router
+# registered for imagomundi data
+api_router.register(r'imagomundi', views.ImagoMundiViewSet)
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

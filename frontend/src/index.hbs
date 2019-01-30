@@ -1,13 +1,22 @@
 <!DOCTYPE html>
-<html><head>
+<html>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>finding imago mundi</title>
     <link rel=stylesheet href="{{{staticRoot}}}{{{cssBundleName}}}">
     <link rel=icon type="image/png" sizes="32x32" href="{{{staticRoot}}}image/favicon32x32.png">
     <link rel=icon type="image/png" sizes="16x16" href="{{{staticRoot}}}image/favicon16x16.png">
-</head><body>
+</head>
+
+<body>
+    <header></header>
     <main></main>
-    {{#libs}}<script src="{{{@root.nodeRoot}}}{{{path}}}"></script>
-    {{/libs}}<script src="{{{staticRoot}}}{{{jsBundleName}}}"></script>
-</body></html>
+    {{#libs}}
+    <script src="{{{@root.nodeRoot}}}{{{path}}}"></script>
+    {{/libs}}
+    <script src="{{{staticRoot}}}{{{jsBundleName}}}"></script>
+</body>
+
+</html>
