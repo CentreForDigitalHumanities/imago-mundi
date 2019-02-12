@@ -1,18 +1,30 @@
-import { extend } from 'lodash';
+
+import { extend, remove } from 'lodash';
 import View from '../core/view';
 import resultTemplate from './searchresult-template';
 import searchTemplate from './search-template';
 import Collection from '../core/collection';
+import ImagoMundiCollection from './imagomundi-collection';
 
 export default class SearchView extends View {
     template = searchTemplate;
     resultTemplate = resultTemplate;
     initialSearchCollection: Collection;
-
+    filterOptionsCollection = new ImagoMundiCollection;
+    current_location_countries: String[] = [];
+    languages: String[] = [];
+    table_keys: String[] = [];
 
     initialize() {
         this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
+
     }
+
+
+    showDetails() {
+        alert('toon details');
+    }
+
 
     search(event) { //waar komt even param vandaan?
         var self = this; // pass the class this as self, because jquery has its own this
@@ -34,6 +46,7 @@ export default class SearchView extends View {
         });
     }
 
+
     applyFilters() {
         this.collection.set(this.initialSearchCollection.models);//first reset to original collection
         this.filterCountryLanguage();
@@ -41,7 +54,7 @@ export default class SearchView extends View {
         return this.collection.toJSON();
     }
 
-
+    //todo: heeft weinig zin meer om de where zo complex te hebben met een and, kan net zo goed twee aparte functies voor country en language maken die collectie opnieuw setten
     filterCountryLanguage() {
         var current_location_country_value = this.$("#current_location_country").val();
         var language_value = this.$("#language").val();
@@ -77,29 +90,52 @@ export default class SearchView extends View {
         }
     }
 
-    //only once called from imagomundi.ts
+    //just once called from imagomundi.ts, get collection to create dynamically the filter select options, and append the template
     render() {
-        this.$el.html(this.template({ results: this.collection.toJSON() }));// werkt maar vervangt hele template, collectie meesturen niet meer nodig?
+        var self = this;
+        this.filterOptionsCollection.fetch({
+            success: function (filterOptionsCollection, response, options) {
+                //filter unique on language and countrylocation 
+                self.current_location_countries = _.uniq(filterOptionsCollection.pluck("current_location_country"));//select attribute and keep unique
+                self.current_location_countries = remove(self.current_location_countries, function (n) { return n != ""; });//remove empty
+                self.current_location_countries.sort();
+
+                self.languages = _.uniq(filterOptionsCollection.pluck("language"));
+                self.languages = remove(self.languages, function (n) { return n != ""; });//remove empty
+                self.languages.sort();
+                self.table_keys = self.filterOptionsCollection.at(1).attributes;
+
+                self.$el.html(self.template({
+                    countries_select: self.current_location_countries,
+                    languages_select: self.languages,
+                    //table_keys: self.table_keys //werkt, maar tabel veel te breed, moet onder elkaar
+                }));
+
+            },
+            error: function (collection, response, options) {
+                console.log("error");
+            }
+        });
+
         return this;
     }
 
     update_searchresult() {
         this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() })); //$el is gewoon vervangen door dit element
         this.$('#countresult').html("number of results: " + this.collection.toJSON().length);
+        // this.$('#keys').html(this.collection.at(1).toJSON());
+        // console.log(this.collection.at(1).toJSON());
     }
 }
 
-extend(SearchView.prototype, { //w
+extend(SearchView.prototype, {
     template: searchTemplate,
     events: {
         'click #search_button': 'search',
-
         'click #current_location_country': 'applyFilters',
-
         'click #language': 'applyFilters',
-
         'click #date_from': 'applyFilters',
-
         'click #date_until': 'applyFilters',
+        'click .details': 'showDetails',
     },
 });

@@ -38,23 +38,21 @@
                 <option value="1700">1700</option>
                 <option value="1800">1800</option>
                 <option value="1900">1900</option>
+                <option value="2000">2000</option>
             </select>
 
             <select name="language" id="language">
                 <option value="">Choose Language</option>
-                <option value="Latin">Latin</option>
-                <option value="French">French</option>
-                <option value="Welsh">Welsh</option>
-                <option value="Italian">Italian</option>
+                {{#each languages_select}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
             </select>
 
-
             <select name="current_location_country" id="current_location_country">
-                <option value="">Choose current country location</option>
-                <option value="Belgium">Belgium</option>
-                <option value="Austria">Austria</option>
-                <option value="England">England</option>
-                <option value="France">France</option>
+                <option value="">Choose country</option>
+                {{#each countries_select}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
             </select>
 
 
@@ -63,28 +61,32 @@
 
         <div id="countresult"></div>
 
+        {{!-- Dit werkt, geeft alle keys, maar wordt veel te breed
+        <div id="keys">
+            {{#each table_keys }}
+            {{@key}}
+            {{/each}}
+
+        </div> --}}
+
         <table class="table is-bordered">
 
             <thead>
                 <tr>
+                    <th><abbr title="Title">Title</abbr></th>
                     <th><abbr title="Shelfmark">Shelfmark</abbr></th>
-                    <th><abbr title="ManuscriptContent">Manuscript Content</abbr></th>
                     <th><abbr title="Current_location_country">Country</abbr></th>
                     <th><abbr title="Language">Language</abbr></th>
                     <th><abbr title="Date from">Date from</abbr></th>
                     <th><abbr title="Date until">Date until</abbr></th>
+                    <th><abbr title="Date until">details</abbr></th>
                 </tr>
             </thead>
 
 
             <tbody id="searchresult">
-                {{#results}}
-                <tr>
-                    <td>{{shelfmark}}</td>
-                    <td>{{manuscript_content}}</td>
 
-                </tr>
-                {{/results}}
+
             </tbody>
         </table>
 

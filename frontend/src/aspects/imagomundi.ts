@@ -13,10 +13,7 @@ import headerView from '../global/im_header-view';
 history.once('route', () => headerView.render().$el.appendTo('header')); //hier wordt de header view aan de body appended. Zie Backbone.history
 //http://backbonejs.org/#History-start
 
-
-directionRouter.on('route:search', () => searchView.render().$el.appendTo('main')); //via method in de view aan main appenden
-
-
+directionRouter.on('route:search', () => searchView.render().$el.appendTo('main')); //via method in de view aan main appenden, was naar render()
 
 directionRouter.on('route:arrive', () => directionFsm.handle('arrive'));//hier wordt een state gezet?
 //directionRouter.on('route:arrive', () => enterView.render().$el.appendTo('main')); //test zonder states. blijkt: Je moet ook detachen, anders wordt hij onder de vorige toegevoegd
@@ -31,7 +28,3 @@ directionFsm.on('exit:arriving', () => enterView.$el.detach()); // hier weggehaa
 
 directionFsm.on('enter:leaving', () => exitView.render().$el.appendTo('main'));
 directionFsm.on('exit:leaving', () => exitView.$el.detach());
-
-
-// directionFsm.on('enter:testrobert', () => testrobertView.render().$el.appendTo('main'));// dit komt in een div binnen element 'main'
-// directionFsm.on('exit:testrobert', () => testrobertView.$el.detach());
