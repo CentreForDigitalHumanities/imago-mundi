@@ -5,7 +5,6 @@ import directionFsm from '../global/ex_direction-fsm';
 import enterView from '../global/ex_enter-view';
 import exitView from '../global/ex_exit-view';
 import searchView from '../global/im_search-view';
-import searchformView from '../global/im_searchform-view';
 import bannerView from '../global/ex_logoBanner';
 
 import headerView from '../global/im_header-view';
