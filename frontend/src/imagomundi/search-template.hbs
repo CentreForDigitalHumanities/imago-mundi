@@ -2,12 +2,91 @@
     <hgroup class="container has-text-centered">
 
         <h2 class="subtitle">
-            {{#i18n 'slogan'}}Dit is de frontpage voor de search, naam: {{name}} {{/i18n}}
+            search template
         </h2>
-        <form action="/api/imagomundi/" id="search-form">
-            <input type="text" id="search"><br>
+
+        <p>
+            Type a search word. Limit your search by typing words seperated by a whitespace or a comma like:
+            London, Harley</p>
+        <form id="search-form">
+
+            <input type="text" id="search" value=''>
+
+            <select name="date_from" id="date_from">
+                <option value="">date from</option>
+                <option value="1000">1000</option>
+                <option value="1100">1100</option>
+                <option value="1200">1200</option>
+                <option value="1300">1300</option>
+                <option value="1400">1400</option>
+                <option value="1500">1500</option>
+                <option value="1600">1600</option>
+                <option value="1700">1700</option>
+                <option value="1800">1800</option>
+                <option value="1900">1900</option>
+            </select>
+
+            <select name="date_until" id="date_until">
+                <option value="">date until</option>
+                <option value="1000">1000</option>
+                <option value="1100">1100</option>
+                <option value="1200">1200</option>
+                <option value="1300">1300</option>
+                <option value="1400">1400</option>
+                <option value="1500">1500</option>
+                <option value="1600">1600</option>
+                <option value="1700">1700</option>
+                <option value="1800">1800</option>
+                <option value="1900">1900</option>
+            </select>
+
+            <select name="language" id="language">
+                <option value="">Choose Language</option>
+                <option value="Latin">Latin</option>
+                <option value="French">French</option>
+                <option value="Welsh">Welsh</option>
+                <option value="Italian">Italian</option>
+            </select>
+
+
+            <select name="current_location_country" id="current_location_country">
+                <option value="">Choose current country location</option>
+                <option value="Belgium">Belgium</option>
+                <option value="Austria">Austria</option>
+                <option value="England">England</option>
+                <option value="France">France</option>
+            </select>
+
+
             <button id="search_button">Search</button>
         </form>
+
+        <div id="countresult"></div>
+
+        <table class="table is-bordered">
+
+            <thead>
+                <tr>
+                    <th><abbr title="Shelfmark">Shelfmark</abbr></th>
+                    <th><abbr title="ManuscriptContent">Manuscript Content</abbr></th>
+                    <th><abbr title="Current_location_country">Country</abbr></th>
+                    <th><abbr title="Language">Language</abbr></th>
+                    <th><abbr title="Date from">Date from</abbr></th>
+                    <th><abbr title="Date until">Date until</abbr></th>
+                </tr>
+            </thead>
+
+
+            <tbody id="searchresult">
+                {{#results}}
+                <tr>
+                    <td>{{shelfmark}}</td>
+                    <td>{{manuscript_content}}</td>
+
+                </tr>
+                {{/results}}
+            </tbody>
+        </table>
 
     </hgroup>
 </section>

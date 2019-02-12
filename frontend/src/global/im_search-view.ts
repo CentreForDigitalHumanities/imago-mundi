@@ -3,3 +3,6 @@ import SearchView from '../imagomundi/search-view';
 import imagomundi_collection from '../global/im_imagomundi_collection';
 
 export default new SearchView({ collection: imagomundi_collection });
+
+//imagomundi_collection.fetch();
+
