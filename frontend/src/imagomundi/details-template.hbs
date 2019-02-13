@@ -1,0 +1,68 @@
+<!-- Content ... -->
+<div class="container modal-imagomundi">
+
+    <table class="table is-bordered is-fullwidth">
+        <thead>
+            <tr>
+                <th style="width:25%;"><abbr title="Attribute">Attribute</abbr></th>
+                <th style="width:25%;"><abbr title="Content"></abbr></th>
+                <th style="width:50%;"><abbr title=" Content">Manuscript content</abbr></th>
+            </tr>
+        </thead>
+
+        {{#detailsmodel}}
+
+        <tr>
+            <td>shelfmark</td>
+            <td>{{shelfmark}}</td>
+            <td rowspan='10'
+                ">{{manuscript_content}}</td>
+        </tr>
+
+        <tr>
+            <td>date from</td>
+            <td>{{date_from}}</td>
+        </tr>
+        <tr>
+            <td>date until</td>
+            <td>{{date_until}}</td>
+        </tr>
+        <tr>
+            <td>current location country</td>
+            <td>{{current_location_country}}</td>
+        </tr>
+        <tr>
+            <td>current location town</td>
+            <td>{{current_location_town}}</td>
+        </tr>
+        <tr>
+            <td>place of origin</td>
+            <td>{{place_of_origin}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1000-1100</td>
+            <td>{{owner_and_location_1000_1100}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1100-1200</td>
+            <td>{{owner_and_location_1100_1200}}</td>
+        </tr>
+         <tr>
+            <td>NOg AFMAKEN....</td>
+            <td></td>
+        </tr>
+        {{/detailsmodel}}
+
+
+        {{!-- Dit werkt, maar je hebt geen invloed op layout
+
+        {{#each detailsmodel}}
+        <tr>
+            <td>{{@key}}</td>
+            <td> {{this}}</td>
+        </tr>
+        {{/each}} --}}
+
+    </table>
+
+</div>

@@ -5,15 +5,19 @@ import resultTemplate from './searchresult-template';
 import searchTemplate from './search-template';
 import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
+import detailsTemplate from './details-template';
 
 export default class SearchView extends View {
     template = searchTemplate;
     resultTemplate = resultTemplate;
+    detailsTemplate = detailsTemplate;
     initialSearchCollection: Collection;
     filterOptionsCollection = new ImagoMundiCollection;
     current_location_countries: String[] = [];
     languages: String[] = [];
     table_keys: String[] = [];
+    showdetails: boolean = false;
+    id_last: Number;
 
     initialize() {
         this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
@@ -21,9 +25,6 @@ export default class SearchView extends View {
     }
 
 
-    showDetails() {
-        alert('toon details');
-    }
 
 
     search(event) { //waar komt even param vandaan?
@@ -103,7 +104,7 @@ export default class SearchView extends View {
                 self.languages = _.uniq(filterOptionsCollection.pluck("language"));
                 self.languages = remove(self.languages, function (n) { return n != ""; });//remove empty
                 self.languages.sort();
-                self.table_keys = self.filterOptionsCollection.at(1).attributes;
+                //self.table_keys = self.filterOptionsCollection.at(1).attributes;
 
                 self.$el.html(self.template({
                     countries_select: self.current_location_countries,
@@ -121,11 +122,35 @@ export default class SearchView extends View {
     }
 
     update_searchresult() {
-        this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() })); //$el is gewoon vervangen door dit element
+        this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
         this.$('#countresult').html("number of results: " + this.collection.toJSON().length);
-        // this.$('#keys').html(this.collection.at(1).toJSON());
-        // console.log(this.collection.at(1).toJSON());
     }
+
+
+    showDetails(event) {
+
+        var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
+
+        if (this.showdetails == false || id != this.id_last) {
+            this.showdetails = true;
+            var detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
+            this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: detailsmodel[0] }));//object is multidimensional, so go one layer deeper
+
+            console.log(detailsmodel[0]);
+        }
+        else {
+            this.$('#showdetails').empty();
+            this.showdetails = false;
+
+        }
+
+        this.id_last = id;
+
+    }
+
+
+
+
 }
 
 extend(SearchView.prototype, {

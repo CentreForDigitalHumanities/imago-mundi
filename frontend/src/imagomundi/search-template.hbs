@@ -1,63 +1,82 @@
 <section class="hero-body">
     <hgroup class="container has-text-centered">
-
-        <h2 class="subtitle">
-            search template
-        </h2>
-
-        <p>
+        <p class="is-size-6">
+            Todo: dit moet in een modal met zoekhulp
             Type a search word. Limit your search by typing words seperated by a whitespace or a comma like:
-            London, Harley</p>
-        <form id="search-form">
+            London, Harley<br>
+        </p>
 
-            <input type="text" id="search" value=''>
+        <div class="columns is-centered">
 
-            <select name="date_from" id="date_from">
-                <option value="">date from</option>
-                <option value="1000">1000</option>
-                <option value="1100">1100</option>
-                <option value="1200">1200</option>
-                <option value="1300">1300</option>
-                <option value="1400">1400</option>
-                <option value="1500">1500</option>
-                <option value="1600">1600</option>
-                <option value="1700">1700</option>
-                <option value="1800">1800</option>
-                <option value="1900">1900</option>
-            </select>
+            <form class="column is-half is-narrow " id="search-form">
 
-            <select name="date_until" id="date_until">
-                <option value="">date until</option>
-                <option value="1000">1000</option>
-                <option value="1100">1100</option>
-                <option value="1200">1200</option>
-                <option value="1300">1300</option>
-                <option value="1400">1400</option>
-                <option value="1500">1500</option>
-                <option value="1600">1600</option>
-                <option value="1700">1700</option>
-                <option value="1800">1800</option>
-                <option value="1900">1900</option>
-                <option value="2000">2000</option>
-            </select>
+                <div class="field is-grouped">
+                    <p class="control is-expanded">
+                        <input class="input is-info" type="text" id="search" value=''>
+                    </p>
+                    <p class="control">
+                        <button class="button is-info" id="search_button">Search</button>
+                    </p>
+                </div>
 
-            <select name="language" id="language">
-                <option value="">Choose Language</option>
-                {{#each languages_select}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select>
+                <div class="field is-grouped">
+                    <div class="select">
+                        <select name="date_from" id="date_from">
+                            <option value="">date from</option>
+                            <option value="1000">1000</option>
+                            <option value="1100">1100</option>
+                            <option value="1200">1200</option>
+                            <option value="1300">1300</option>
+                            <option value="1400">1400</option>
+                            <option value="1500">1500</option>
+                            <option value="1600">1600</option>
+                            <option value="1700">1700</option>
+                            <option value="1800">1800</option>
+                            <option value="1900">1900</option>
+                        </select>
+                    </div>
 
-            <select name="current_location_country" id="current_location_country">
-                <option value="">Choose country</option>
-                {{#each countries_select}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select>
+                    <div class="select">
+                        <select name="date_until" id="date_until">
+                            <option value="">date until</option>
+                            <option value="1000">1000</option>
+                            <option value="1100">1100</option>
+                            <option value="1200">1200</option>
+                            <option value="1300">1300</option>
+                            <option value="1400">1400</option>
+                            <option value="1500">1500</option>
+                            <option value="1600">1600</option>
+                            <option value="1700">1700</option>
+                            <option value="1800">1800</option>
+                            <option value="1900">1900</option>
+                            <option value="2000">2000</option>
+                        </select>
+                    </div>
 
+                    <div class="select">
+                        <select name="language" id="language">
+                            <option value="">Choose Language</option>
+                            {{#each languages_select}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
 
-            <button id="search_button">Search</button>
-        </form>
+                    <div class="select">
+                        <select name="current_location_country" id="current_location_country">
+                            <option value="">Choose country</option>
+                            {{#each countries_select}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
 
         <div id="countresult"></div>
 
@@ -69,25 +88,23 @@
 
         </div> --}}
 
-        <table class="table is-bordered">
-
+        <div id="showdetails"></div>
+        <table class="table is-bordered is-fullwidth">
             <thead>
                 <tr>
+                    <th></th>
                     <th><abbr title="Title">Title</abbr></th>
                     <th><abbr title="Shelfmark">Shelfmark</abbr></th>
                     <th><abbr title="Current_location_country">Country</abbr></th>
                     <th><abbr title="Language">Language</abbr></th>
                     <th><abbr title="Date from">Date from</abbr></th>
                     <th><abbr title="Date until">Date until</abbr></th>
-                    <th><abbr title="Date until">details</abbr></th>
+
                 </tr>
             </thead>
 
+            <tbody id="searchresult"></tbody>
 
-            <tbody id="searchresult">
-
-
-            </tbody>
         </table>
 
     </hgroup>
