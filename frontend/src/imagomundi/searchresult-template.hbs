@@ -1,16 +1,31 @@
-{{#results}}
-<tr>
-    <td>
+<thead>
 
-        <a class="button is-small is-primary is-rounded details" id="{{id}}">i</a>
 
-    </td>
-    <td>{{title}}</td>
-    <td>{{shelfmark}}</td>
-    <td>{{current_location_country}}</td>
-    <td>{{language}}</td>
-    <td>{{date_from}}</td>
-    <td>{{date_until}}</td>
+    <tr>
+        <th style="width:55px; font-size:11px; padding-left:3px; padding-top:13px;">
+            <div id="countresult"></div>
+        </th>
+        <th><abbr title="Title">Title</abbr></th>
+        <th><abbr title="Shelfmark">Shelfmark</abbr></th>
+        <th><abbr title="Current_location_country">Country</abbr></th>
+        <th><abbr title="Language">Language</abbr></th>
+        <th><abbr title="Date from">Date from</abbr></th>
+        <th><abbr title="Date until">Date until</abbr></th>
 
-</tr>
-{{/results}}
+    </tr>
+</thead>
+<tbody>
+    {{#results}}
+    <tr>
+        <td>
+            <a class="details" id="{{id}}"><i class="fa fa-info"></i></a>
+        </td>
+        <td>{{title}}</td>
+        <td>{{shelfmark}}</td>
+        <td>{{current_location_country}}</td>
+        <td>{{language}}</td>
+        <td>{{date_from}}</td>
+        <td>{{date_until}}</td>
+    </tr>
+    {{/results}}
+</tbody>

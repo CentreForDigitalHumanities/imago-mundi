@@ -10,7 +10,8 @@ import bannerView from '../global/ex_logoBanner';
 import headerView from '../global/im_header-view';
 //import testrobertView from '../global/ex_testrobert-view';
 
-history.once('route', () => headerView.render().$el.appendTo('header')); //hier wordt de header view aan de body appended. Zie Backbone.history
+//header uitgeschakeld: voorlopig niet nodig
+//history.once('route', () => headerView.render().$el.appendTo('header')); //hier wordt de header view aan de body appended. Zie Backbone.history
 //http://backbonejs.org/#History-start
 
 directionRouter.on('route:search', () => searchView.render().$el.appendTo('main')); //via method in de view aan main appenden, was naar render()

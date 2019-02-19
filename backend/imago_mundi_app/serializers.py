@@ -7,7 +7,7 @@ class ImagoMundiSerializer(serializers.HyperlinkedModelSerializer):
         model = ImagoMundi
         fields = ('id', 'shelfmark', 'date_from', 'date_until',
                   'current_location_country', 'current_location_town',
-                  'place_of_origin',
+                  'address_current_location', 'place_of_origin',
                   'owner_and_location_1000_1100',
                   'owner_and_location_1100_1200',
                   'owner_and_location_1200_1300',
@@ -21,6 +21,6 @@ class ImagoMundiSerializer(serializers.HyperlinkedModelSerializer):
                   'language', 'title', 'folia', 'text_type',
                   'chapters', 'incipit', 'explicit',
                   'attribution_of_author', 'decorations',
-                  'manuscript_content', 'bibliography',
+                  'manuscript_content', 'images', 'bibliography',
                   'notes'
                   )

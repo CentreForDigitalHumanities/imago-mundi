@@ -9,7 +9,7 @@ import string
 
 
 class ImagoMundiResource(resources.ModelResource):
-    # attribute is de naam in het model? Columnname is van de import
+    # attribute is de naam in het model, Columnname is van de import
     # gebruikt nu dus eigenlijk de method 'fields' van import_export class?
     shelfmark = Field(column_name='Shelfmark', attribute="shelfmark")
     date_from = Field(column_name='date_from', attribute="date_from")
@@ -18,6 +18,11 @@ class ImagoMundiResource(resources.ModelResource):
         column_name='current_location_country', attribute="current_location_country")
     current_location_town = Field(
         column_name='current_location_town', attribute="current_location_town")
+
+    # nieuw
+    address_current_location = Field(
+        column_name='Address current location', attribute="address_current_location")
+
     place_of_origin = Field(column_name='Place of origin',
                             attribute="place_of_origin")
     owner_and_location_1000_1100 = Field(
@@ -50,6 +55,11 @@ class ImagoMundiResource(resources.ModelResource):
     attribution_of_author = Field(
         column_name='Attribution of author', attribute="attribution_of_author")
     decorations = Field(column_name='Decorations', attribute="decorations")
+
+    # nieuw
+    images = Field(
+        column_name='Images', attribute="images")
+
     manuscript_content = Field(
         column_name='Manuscript content', attribute="manuscript_content")
     bibliography = Field(column_name='Bibliography', attribute="bibliography")
@@ -68,7 +78,7 @@ class ImagoMundiResource(resources.ModelResource):
         if 'id' not in dataset.headers:
             dataset.insert_col(0, col=["", ]*dataset.height, header="id")
 
-        # insert new columns that are not in Excellsheet, to split columns in more usefull for search operations
+        # insert new columns that are not in Excellsheet, to split columns in more usefull ones for search operations
         dataset.insert_col(1, col=["", ]*dataset.height, header="date_from")
         dataset.insert_col(2, col=["", ]*dataset.height, header="date_until")
         dataset.insert_col(3, col=["", ]*dataset.height,

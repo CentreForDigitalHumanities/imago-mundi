@@ -24,9 +24,6 @@ export default class SearchView extends View {
 
     }
 
-
-
-
     search(event) { //waar komt even param vandaan?
         var self = this; // pass the class this as self, because jquery has its own this
         event.preventDefault();
@@ -123,12 +120,13 @@ export default class SearchView extends View {
 
     update_searchresult() {
         this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
-        this.$('#countresult').html("number of results: " + this.collection.toJSON().length);
+        this.$('#countresult').html("N = " + this.collection.toJSON().length);
+        this.$('#titlebox').hide();//hide title to have more room for table
     }
 
 
     showDetails(event) {
-
+        event.stopPropagation();// to prevent event bubbling: the parent elements must not be affected
         var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
 
         if (this.showdetails == false || id != this.id_last) {
@@ -139,20 +137,39 @@ export default class SearchView extends View {
             console.log(detailsmodel[0]);
         }
         else {
-            this.$('#showdetails').empty();
-            this.showdetails = false;
-
+            this.closeDetails(event);
         }
 
         this.id_last = id;
+    }
 
+    closeDetails(event) {
+        //close details screen, but not when is clicked on table itself
+        if (event.target.className != '') {
+            this.$('#showdetails').empty();
+            this.showdetails = false;
+            console.log('close details')
+        }
+        console.log(event.target.className);
     }
 
 
+    showHelp(event) {
+        event.preventDefault();
+        this.$('.modal').addClass("is-active");
+    }
+
+
+    closeHelp(event) {
+        event.preventDefault();
+        this.$('.modal').removeClass("is-active");
+    }
 
 
 }
 
+
+//:not(.modal-imagomundi) werkte niet
 extend(SearchView.prototype, {
     template: searchTemplate,
     events: {
@@ -162,5 +179,9 @@ extend(SearchView.prototype, {
         'click #date_from': 'applyFilters',
         'click #date_until': 'applyFilters',
         'click .details': 'showDetails',
+        'click #help_button': 'showHelp',
+        'click #close_button': 'closeHelp',
+        'click .hero': 'closeDetails',
+        //'click .modal-imagomundi': 'showDetails', helpt niet
     },
 });

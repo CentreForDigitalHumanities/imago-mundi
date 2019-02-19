@@ -1,16 +1,53 @@
-<section class="hero-body">
-    <hgroup class="container has-text-centered">
-        <p class="is-size-6">
-            Todo: dit moet in een modal met zoekhulp
-            Type a search word. Limit your search by typing words seperated by a whitespace or a comma like:
-            London, Harley<br>
-        </p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<section class="hero is-fullheight imagomundi_background ">
+
+    <hgroup class="container imagomundi_searchscreen">
+
+
+        <div class='titlebox has-text-centered' id='titlebox'>
+            <h1>Images of the World</h1>
+            <h2>Manuscripts Database of the Imago Mundi tradition</h2>
+            <br><br>
+        </div>
+
+        <div class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Search help</p>
+                    <button class="button" id="close_button">X</button>
+                </header>
+                <section class="modal-card-body">
+                    <p>
+                        Type a search word. You can limit your search by typing words seperated by a whitespace or a
+                        comma like: London, Harley.<br><br>
+                    </p>
+                    <p>
+                        Filter your results with the selectboxes.<br><br>
+                    </p>
+                    <p>
+                        For details, click the info in front of every search result.<br><br>
+                    </p>
+
+
+                </section>
+                <footer class="modal-card-foot">
+
+                </footer>
+            </div>
+        </div>
+
+
 
         <div class="columns is-centered">
 
-            <form class="column is-half is-narrow " id="search-form">
+            <form class="column is-narrow has-text-centered" id="search-form">
 
-                <div class="field is-grouped">
+                <div class="field is-grouped imagomundi_search_combi">
+                    <p class="control">
+                        <button class="button is-primary" id="help_button">?</button>
+                    </p>
                     <p class="control is-expanded">
                         <input class="input is-info" type="text" id="search" value=''>
                     </p>
@@ -20,7 +57,27 @@
                 </div>
 
                 <div class="field is-grouped">
-                    <div class="select">
+
+                    <div class="select  is-info is-small">
+                        <select name="language" id="language">
+                            <option value="">Language</option>
+                            {{#each languages_select}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class="select is-info is-small">
+                        <select name="current_location_country" id="current_location_country">
+                            <option value="">Country</option>
+                            {{#each countries_select}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+
+                    <div class="select  is-info is-small">
                         <select name="date_from" id="date_from">
                             <option value="">date from</option>
                             <option value="1000">1000</option>
@@ -36,7 +93,7 @@
                         </select>
                     </div>
 
-                    <div class="select">
+                    <div class="select  is-info is-small">
                         <select name="date_until" id="date_until">
                             <option value="">date until</option>
                             <option value="1000">1000</option>
@@ -53,23 +110,7 @@
                         </select>
                     </div>
 
-                    <div class="select">
-                        <select name="language" id="language">
-                            <option value="">Choose Language</option>
-                            {{#each languages_select}}
-                            <option value="{{this}}">{{this}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
 
-                    <div class="select">
-                        <select name="current_location_country" id="current_location_country">
-                            <option value="">Choose country</option>
-                            {{#each countries_select}}
-                            <option value="{{this}}">{{this}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
 
                 </div>
 
@@ -77,8 +118,7 @@
 
         </div>
 
-
-        <div id="countresult"></div>
+        {{!-- <div id="countresult"></div> --}}
 
         {{!-- Dit werkt, geeft alle keys, maar wordt veel te breed
         <div id="keys">
@@ -89,23 +129,8 @@
         </div> --}}
 
         <div id="showdetails"></div>
-        <table class="table is-bordered is-fullwidth">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><abbr title="Title">Title</abbr></th>
-                    <th><abbr title="Shelfmark">Shelfmark</abbr></th>
-                    <th><abbr title="Current_location_country">Country</abbr></th>
-                    <th><abbr title="Language">Language</abbr></th>
-                    <th><abbr title="Date from">Date from</abbr></th>
-                    <th><abbr title="Date until">Date until</abbr></th>
+        <table class="table is-bordered is-fullwidth" id="searchresult"></table>
 
-                </tr>
-            </thead>
-
-            <tbody id="searchresult"></tbody>
-
-        </table>
 
     </hgroup>
 </section>

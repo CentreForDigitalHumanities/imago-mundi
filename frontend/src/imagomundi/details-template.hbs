@@ -4,19 +4,22 @@
     <table class="table is-bordered is-fullwidth">
         <thead>
             <tr>
-                <th style="width:25%;"><abbr title="Attribute">Attribute</abbr></th>
-                <th style="width:25%;"><abbr title="Content"></abbr></th>
-                <th style="width:50%;"><abbr title=" Content">Manuscript content</abbr></th>
+                <th style="width:20%;"><abbr title="Attribute">Attributes</abbr></th>
+                <th style="width:35%;"><abbr title="Content"></abbr></th>
+                <th style="width:45%;"><abbr title=" Content">Manuscript content</abbr></th>
             </tr>
         </thead>
 
         {{#detailsmodel}}
 
         <tr>
+            <td>title</td>
+            <td>{{title}}</td>
+            <td rowspan='10'>{{manuscript_content}}</td>
+        </tr>
+        <tr>
             <td>shelfmark</td>
             <td>{{shelfmark}}</td>
-            <td rowspan='10'
-                ">{{manuscript_content}}</td>
         </tr>
 
         <tr>
@@ -35,10 +38,57 @@
             <td>current location town</td>
             <td>{{current_location_town}}</td>
         </tr>
+
+        <tr>
+            <td>address current location</td>
+            <td>{{address_current_location}}</td>
+        </tr>
+
         <tr>
             <td>place of origin</td>
             <td>{{place_of_origin}}</td>
         </tr>
+
+        <tr>
+            <td>language</td>
+            <td>{{language}}</td>
+
+        </tr>
+        <tr>
+            <td>folia</td>
+            <td>{{folia}}</td>
+        </tr>
+        <tr>
+            <td>text type</td>
+            <td>{{text_type}}</td>
+        </tr>
+        <tr>
+            <td>folia</td>
+            <td>{{folia}}</td>
+            <td>Bibliography</td>
+        </tr>
+        <tr>
+            <td>chapters</td>
+            <td>{{chapters}}</td>
+            <td rowspan='10'>{{bibliography}}</td>
+        </tr>
+        <tr>
+            <td>incipit</td>
+            <td>{{incipit}}</td>
+        </tr>
+        <tr>
+            <td>explicit</td>
+            <td>{{explicit}}</td>
+        </tr>
+        <tr>
+            <td>attributions of author</td>
+            <td>{{attribution_of_author}}</td>
+        </tr>
+        <tr>
+            <td>decorations</td>
+            <td>{{decorations}}</td>
+        </tr>
+
         <tr>
             <td>owner and location 1000-1100</td>
             <td>{{owner_and_location_1000_1100}}</td>
@@ -47,10 +97,44 @@
             <td>owner and location 1100-1200</td>
             <td>{{owner_and_location_1100_1200}}</td>
         </tr>
-         <tr>
-            <td>NOg AFMAKEN....</td>
-            <td></td>
+        <tr>
+            <td>owner and location 1200-1300</td>
+            <td>{{owner_and_location_1200_1300}}</td>
         </tr>
+        <tr>
+            <td>owner and location 1300-1400</td>
+            <td>{{owner_and_location_1300_1400}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1400-1500</td>
+            <td>{{owner_and_location_1400_1500}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1500-1600</td>
+            <td>{{owner_and_location_1500_1600}}</td>
+            <td>notes</td>
+        </tr>
+        <tr>
+            <td>owner and location 1600-1700</td>
+            <td>{{owner_and_location_1600_1700}}</td>
+            <td rowspan='4'>{{notes}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1700-1800</td>
+            <td>{{owner_and_location_1700_1800}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1800-1900</td>
+            <td>{{owner_and_location_1800_1900}}</td>
+        </tr>
+        <tr>
+            <td>owner and location 1900-2000</td>
+            <td>{{owner_and_location_1900_2000}}</td>
+
+
+        </tr>
+
+
         {{/detailsmodel}}
 
 
