@@ -47,27 +47,43 @@
     :background-repeat repeat-y
     :background-size 100%
     
-
-
-
 .modal-imagomundi
     :left 20%  
-    :top 5%
+    :top 9%
     :border-radius 5px
     :padding 5px
     :margin 10px
-    :background #AA4823
+    :background #f7daaf
     :position fixed
     :width 60%
     :z-index 100
-    
+    :overflow auto
+
+@media only screen and (max-width: 1500px) 
+    .modal-imagomundi
+        :top 2%
+        :width 80%
+        :left 10% 
+
+@media only screen and (max-width: 1100px) 
+    .modal-imagomundi
+        :top 1%
+        :width 85%
+        :left 10% 
+
 
 .modal-imagomundi .table
     :color #000
-    :background #f7f6ea
+    :background #fff
     :font-size 12px
     :line-height 13px
-    
+
+.modal-imagomundi .table td
+    :padding-top 0.4em
+    :padding-bottom 0.4em
+    :padding-left 0.8em
+    :padding-right 0.8em
+
 .search_help
     :visibility hidden
     :height: 
@@ -83,6 +99,9 @@
      :font-size 2em
      :color #fcd8c9
 
+.title
+    :font-size 0.9em
+    :font-weight bold
 
 #search-form
     :padding 30px
@@ -101,7 +120,25 @@ a.details
     :color red
 
 #search_button
+    :background #f7ac22
+
+#search_button:hover
+    :background #FCC66A
+
+#reset_button
     :background #ce3a04
 
+#reset_button:hover
+    :background #dd5523 
+
+
+#searchresult
+    :font-size 0.9em
+    :background #fcf8f2
+
+
+#map 
+    :height 500px
+    
 
 .imagomundi_searchscreen

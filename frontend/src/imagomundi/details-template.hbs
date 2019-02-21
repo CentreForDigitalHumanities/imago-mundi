@@ -4,20 +4,26 @@
     <table class="table is-bordered is-fullwidth">
         <thead>
             <tr>
-                <th style="width:20%;"><abbr title="Attribute">Attributes</abbr></th>
-                <th style="width:35%;"><abbr title="Content"></abbr></th>
-                <th style="width:45%;"><abbr title=" Content">Manuscript content</abbr></th>
+                <th style="width:40%;"><abbr title=" Content">Database of the Imago Mundi tradition details</abbr></th>
+
+                <th style="width:20%;"><abbr title="Attribute"></abbr></th>
+
+                <th style="width:40%;"><abbr title="Content"></abbr></th>
+
             </tr>
         </thead>
 
         {{#detailsmodel}}
 
+
         <tr>
+            <td>Manuscript content</td>
             <td>title</td>
             <td>{{title}}</td>
-            <td rowspan='10'>{{manuscript_content}}</td>
+
         </tr>
         <tr>
+            <td rowspan='10'>{{manuscript_content}}</td>
             <td>shelfmark</td>
             <td>{{shelfmark}}</td>
         </tr>
@@ -55,22 +61,24 @@
 
         </tr>
         <tr>
-            <td>folia</td>
-            <td>{{folia}}</td>
+            <td>images</td>
+            <td><a href="{{images}}" target="_blank">{{images}}</a></td>
         </tr>
         <tr>
             <td>text type</td>
             <td>{{text_type}}</td>
         </tr>
         <tr>
+            <td>Bibliography</td>
             <td>folia</td>
             <td>{{folia}}</td>
-            <td>Bibliography</td>
+
         </tr>
         <tr>
+            <td rowspan='10'>{{bibliography}}</td>
             <td>chapters</td>
             <td>{{chapters}}</td>
-            <td rowspan='10'>{{bibliography}}</td>
+
         </tr>
         <tr>
             <td>incipit</td>
@@ -110,14 +118,16 @@
             <td>{{owner_and_location_1400_1500}}</td>
         </tr>
         <tr>
+            <td>notes</td>
             <td>owner and location 1500-1600</td>
             <td>{{owner_and_location_1500_1600}}</td>
-            <td>notes</td>
+
         </tr>
         <tr>
+            <td rowspan='4'>{{notes}}</td>
             <td>owner and location 1600-1700</td>
             <td>{{owner_and_location_1600_1700}}</td>
-            <td rowspan='4'>{{notes}}</td>
+
         </tr>
         <tr>
             <td>owner and location 1700-1800</td>
