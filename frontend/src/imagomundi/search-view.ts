@@ -32,12 +32,10 @@ export default class SearchView extends View {
     //googleMapsClient: GoogleMapsClient; dit werkt, maar is geen maps
     //google: google;
 
-    //map:Google; //hier zou je hem moeten kunnen initialiseren als type
-    //mapRef: google.maps.Map;
+    //Todo: het typen van google lukt dus nog niet. 
 
     initialize() {
         this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
-        //this.initMap();
     }
 
 
@@ -45,7 +43,7 @@ export default class SearchView extends View {
     initMap() {
         // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
         var map = new google.maps.Map($('#map').get(0), { //this is er van af, enkel dan herkent hij hem, waarschijnlijk omdat hij nu in de index staat. Todo: verplaatsen
-            zoom: 5,
+            zoom: 4, //lager is verder weg
             center: { lat: 51.4, lng: 11.4 }
         });
 
@@ -56,74 +54,86 @@ export default class SearchView extends View {
 
     geocodeAddress(geocoder, resultsMap) {
 
-        //var geocoder2 = new google.maps.Geocoder();
-        //console.log(geocoder2);
         var addresses = [];
-        var geocode_max = 15;
+        var geocode_max = 12;
         var addresses_all = _.uniq(this.collection.pluck("address_current_location"));
         addresses_all = remove(addresses_all, function (n) { return n != ""; });//remove empty
 
         //Geocoding API: 50 requests per second (QPS), calculated as the sum of client-side and server-side queries.
         //aantal adressen dus beperken.
-        //een max aantal is ook nog niet voldoende, schijnt dat het niet te snel achter elkaar mag
+        //een max aantal is ook nog niet voldoende, schijnt dat het niet te snel achter elkaar mag. Daarom ook een timeout erin
         if (addresses_all.length < geocode_max) {
             geocode_max = addresses_all.length;
         }
 
-        for (i = 0; i < geocode_max; i++) {
-            addresses.push(addresses_all[i]);
+        for (let k = 0; k < geocode_max; k++) {
+            addresses.push(addresses_all[k]);
         };
 
-        console.log(addresses);
+        //console.log(addresses);
 
-
-        for (var i = 0; i < addresses.length; i++) {
-            //console.log(addresses[i]);
+        //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
+        //lijkt erop dat over_query_limit ontstaat na 12 requests, dus binnen het interval er 12 kunnen loopen, dan 1 sec wachten en dan weer 12 doen?
+        let i = 0;
+        let intervalId = setInterval(function () {
 
             let address = addresses[i];// via let wordt address telkens een neiuwe variable, anders werd hij nooit vernieuwd als timeout werd gebruikt, dan kreeg je meteen de laatste in array
 
+            console.log('gaat dit geocoden:')
+            console.log(address)
 
-            setTimeout(function () {
+            geocoder.geocode({ 'address': address }, function (results, status) {
 
-                console.log('gaat dit geocoden:')
-                console.log(address)
-                geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    //dit is nog lastig, want hij zet hem dus op het laatste resultaat van de loop
+                    //https://stackoverflow.com/questions/15719951/auto-center-map-with-multiple-markers-in-google-maps-api-v3
 
-                    if (status === 'OK') {
-                        resultsMap.setCenter(results[0].geometry.location);
-                        var marker = new google.maps.Marker({
-                            map: resultsMap,
-                            position: results[0].geometry.location,
-                            title: results[0].formatted_address
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        position: results[0].geometry.location,
+                        title: results[0].formatted_address
 
-                        });
+                    });
 
-                        console.log('resultaat:')
-                        console.log(results)
+                    console.log('resultaat:')
+                    console.log(results)
 
-                        var infowindow = new google.maps.InfoWindow({
-                            content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
-                        });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
+                    });
 
-                        //infowindow.open(map, marker);
-                        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                            return function () {
-                                infowindow.open(map, marker);
-                            }
-                        })(marker, i));
+                    //infowindow.open(map, marker);
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            infowindow.open(map, marker);
+                        }
+                    })(marker, i));
 
-                    } else {
-                        console.log('Geocode was not successful for the following reason: ' + status);
-                    }
+                } else {
+                    console.log('Geocode was not successful for the following reason: ' + status);
                 }
+            }
 
-                );
+            );//geocode
 
-            }, 200);
 
-        }//for
+            if (i === addresses.length - 1) {
+                clearInterval(intervalId);
+            }
+
+            i++;
+
+        }, 300);//set interval
+
 
     }
+
+
+
+
+
+
 
 
 
@@ -301,6 +311,39 @@ export default class SearchView extends View {
         //console.log('reset button')
     }
 
+    changeTabs(event) {
+        var id = event.currentTarget.id;
+
+        //first hide all content, remove is-active from tab
+        this.$('.content-tab').each(function (index, element) {
+            $(element).hide();
+        });
+        this.$('.tab').each(function (index, element) {
+            $(element).removeClass("is-active");
+        });
+
+        //console.log(this.$('#li_content'));
+
+        if (id == 'link_tab_content') {
+            this.$('#tab_content').show();
+            this.$('#li_content').addClass("is-active");// wordt wel gevonden
+            //console.log(this.$('#li_content'));
+        }
+        if (id == 'link_tab_details') {
+            this.$('#tab_details').show();
+            this.$('#li_details').addClass("is-active");
+
+        }
+        if (id == 'link_tab_location') {
+            this.$('#tab_location').show();
+            this.$('#li_location').addClass("is-active"); //lijkt niet te vinden
+        }
+
+        console.log(this.$('#li_content'));
+        console.log(this.$('#li_details'));
+        console.log(this.$('#li_location'));
+
+    }
 
 
 
@@ -323,8 +366,7 @@ extend(SearchView.prototype, {
         'click .title': 'closeDetails',
         'click .modal-background': 'closeHelp',
         'click #reset_button': 'resetFilters',
-
-
+        'click .link_tab': 'changeTabs',
 
     },
 });
