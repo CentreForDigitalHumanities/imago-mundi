@@ -6,6 +6,7 @@ import searchTemplate from './search-template';
 import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
+import { Model } from 'backbone';
 //import mapTemplate from './map-template'; gaat niet werken, moet vanuit typescript zelf
 //import { createClient, GoogleMapsClient, google } from '@google/maps';
 // declare var google;
@@ -26,6 +27,8 @@ export default class SearchView extends View {
     table_keys: String[] = [];
     showdetails: boolean = false;
     id_last: Number;
+    detailsmodel: Model;
+    //intervalId: any;
     // map: any; werkt niet om het global te maken, herkent de methods niet meer
     // geocoder: any;
 
@@ -80,7 +83,7 @@ export default class SearchView extends View {
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
         //lijkt erop dat over_query_limit ontstaat na 12 requests, dus binnen het interval er 12 kunnen loopen, dan 1 sec wachten en dan weer 12 doen?
         let i = 0;
-        let intervalId = setInterval(function () {
+        let intervalIdCurrent = setInterval(function () {
 
             let address = addresses[i];// via let wordt address telkens een neiuwe variable, anders werd hij nooit vernieuwd als timeout werd gebruikt, dan kreeg je meteen de laatste in array
 
@@ -100,6 +103,8 @@ export default class SearchView extends View {
                         title: results[0].formatted_address
                     });
 
+                    console.log('teller:')
+                    console.log(i)
                     console.log('resultaat:')
                     console.log(results)
 
@@ -121,7 +126,7 @@ export default class SearchView extends View {
             );//geocode
 
             if (i === addresses.length - 1) {
-                clearInterval(intervalId);
+                clearInterval(intervalIdCurrent);
             }
             i++;
         }, 200);//set interval
@@ -133,34 +138,38 @@ export default class SearchView extends View {
         //console.log(detailsmodel);
         // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
-            zoom: 4, //lager is verder weg
+            zoom: 5, //lager is verder weg
             center: { lat: 51.4, lng: 11.4 }
         });
-
-        var geocoder = new google.maps.Geocoder();
+        let bounds = new google.maps.LatLngBounds();
+        let geocoder = new google.maps.Geocoder();
         var addresses = [];
         var location_data = [];
+        var markers = [];
+        let icon;
 
         //dit moet ws een object worden, en enkel als kolom gevuld is toevoegen, plus de andere gegevens, want probleem: een laatste lege marker kan de vorige overlappen
         //idee: deze array wel gebruiken, maar daarna via een loop een object pushen waar enkel data in komt als is ingevuld, en meteen erbij het tijdvak. icon kan dan later op tijdvak worden gekozen
-        var addresses_all = [detailsmodel['owner_and_location_1000_1100'],//historische locaties, moeten een ander soort marker krijgen
-        detailsmodel['owner_and_location_1100_1200'],
-        detailsmodel['owner_and_location_1200_1300'],
-        detailsmodel['owner_and_location_1300_1400'],
-        detailsmodel['owner_and_location_1400_1500'],
-        detailsmodel['owner_and_location_1600_1700'],
-        detailsmodel['owner_and_location_1700_1800'],
-        detailsmodel['owner_and_location_1900_2000'],
-        detailsmodel['address_current_location'] //de huidige locatie
+        var addresses_all = [
+            detailsmodel['owner_and_location_1000_1100'],//historische locaties, moeten een ander soort marker krijgen
+            detailsmodel['owner_and_location_1100_1200'],
+            detailsmodel['owner_and_location_1200_1300'],
+            detailsmodel['owner_and_location_1300_1400'],
+            detailsmodel['owner_and_location_1400_1500'],
+            detailsmodel['owner_and_location_1500_1600'],
+            detailsmodel['owner_and_location_1600_1700'],
+            detailsmodel['owner_and_location_1700_1800'],
+            detailsmodel['owner_and_location_1800_1900'],
+            detailsmodel['owner_and_location_1900_2000'],
+            detailsmodel['address_current_location'] //de huidige locatie
         ]; //de relevante data in array zetten
 
-        var periods = ['1000-1100', '1100-1200', '1200-1300', '1300-1400', '1400-1500', '1500-1600', '1600-1700', '1700-1800', '1800-1900', 'current location'];
+        var periods = ['1000-1100', '1100-1200', '1200-1300', '1300-1400', '1400-1500', '1500-1600', '1600-1700', '1700-1800', '1800-1900', '1900-2000', 'current location'];
         var marker_icons = ['http://maps.google.com/mapfiles/ms/icons/blue-dot.png', 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'];
 
 
         for (let k = 0; k < addresses_all.length; k++) {
-            //dit werkt
-            if (addresses_all[k] != '' && addresses_all[k] != '?' && addresses_all[k] != '-') {
+            if (addresses_all[k] != null && addresses_all[k] != '?' && addresses_all[k] != '-' && addresses_all[k] != '') {
                 location_data.push({ 'address': addresses_all[k], 'period': periods[k] });
             }
         };
@@ -170,58 +179,112 @@ export default class SearchView extends View {
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
         //lijkt erop dat over_query_limit ontstaat na 12 requests, dus binnen het interval er 12 kunnen loopen, dan 1 sec wachten en dan weer 12 doen?
         let i = 0;
-        let intervalId = setInterval(function () {
+        let intervalId2 = setInterval(function () {
+            let address;
 
-            let icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';//tijdelijk
-            // let address = addresses[i];// via let wordt address telkens een neiuwe variable, anders werd hij nooit vernieuwd als timeout werd gebruikt, dan kreeg je meteen de laatste in array
-            // if (i < 7) {
-            //     icon = marker_icons[0];
-            // }
-            // else {
-            //     icon = marker_icons[1];
-            // }
+            //let icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';//tijdelijk
+            if (i < (_.size(location_data) - 1)) {
+                icon = marker_icons[0];
+            }
+            else {
+                icon = marker_icons[1];
+            }
 
-            //console.log('gaat dit geocoden:')
-            //console.log(address)
+            //idee: omdat locaties vaak dicht bij elkaar liggen, kan ook de bibliotheek worden gebruikt bij geocoding, maar dan moet de dubbele punt door komma 
+            //worden vervangen Austria, Vienna, Hofbibliothek. 
+
+            if (i < (_.size(location_data) - 0)) {
+                address = location_data[i].address;
+
+                geocoder.geocode({ 'address': address }, function (results, status) {
+
+                    if (status === 'OK') {
+                        //map.setCenter(results[0].geometry.location);
+
+                        //console.log(results[0].geometry.location) //lijkt leeg
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location, //lijkt geen ltlng te bevatten?var latitude = results[0].geometry.location.lat(); var longitude = results[0].geometry.location.lng();
+                            title: results[0].formatted_address,
+                            icon: icon
+                        });
+
+                        let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                        map.setCenter(loc);
+
+                        //let loc = new google.maps.LatLng(51.508742, 12.120850)
+                        //let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+
+                        //bounds.extend({ lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng() });
+                        bounds.extend(loc);
+
+                        console.log(results[0].geometry.location.lng());
+                        console.log(loc);
+                        console.log(bounds);
+
+                        markers.push(marker); //marker aan de array toevoegen
+
+                        console.log('resultaat:')
+                        //console.log(results)
+                        console.log(i);
+                        //console.log(location_data[i]);
 
 
-            geocoder.geocode({ 'address': location_data[i].address }, function (results, status) {
+                        var infowindow = new google.maps.InfoWindow({
+                            content: location_data[i].period + " : " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom?
+                        });
 
-                if (status === 'OK') {
-                    map.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location,
-                        title: results[0].formatted_address,
-                        //label: periods[i], //werkt niet echt, is onleesbaar
-                        icon: icon
-                    });
+                        //infowindow.open(map, marker);
+                        google.maps.event.addListener(marker, 'click', (function (marker) {
+                            return function () {
+                                infowindow.open(map, marker);
+                            }
+                        })(marker));
 
-                    console.log('resultaat:')
-                    console.log(results)
 
-                    var infowindow = new google.maps.InfoWindow({
-                        content: periods[i] + " : " + results[0].formatted_address
-                    });
+                    } else {
+                        console.log('Geocode was not successful for the following reason: ' + status);
+                    }
 
-                    //infowindow.open(map, marker);
-                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                        return function () {
-                            infowindow.open(map, marker);
-                        }
-                    })(marker, i));
+                    i++; //hier ophogen, pas als er gegeocoded is,
 
-                } else {
-                    console.log('Geocode was not successful for the following reason: ' + status);
+                    map.fitBounds(bounds);
+                    map.panToBounds(bounds);
+
                 }
-            }
-            );//geocode
+                );//geocode
+            }//if
 
-            if (i === _.size(location_data) - 1) {
-                clearInterval(intervalId);
+
+            //console.log(i);
+            //console.log('size:');
+            //console.log(_.size(location_data));
+
+
+            if (i >= _.size(location_data) - 1) {  // als hij stopt loopt er toch nog een laatste, en aantal moet -1, want i start op 0 vanwege plek 0 in array
+
+                clearInterval(intervalId2);
+
+                console.log('gestopt en markers:');
+                console.log(bounds);
+                //if more locations, then reset map, only one location results in most zoomed out world view
+                //if (_.size(location_data) > 1) {
+                // map.fitBounds(bounds);
+                // map.panToBounds(bounds);
+                //}
+
+
             }
-            i++;
-        }, 200);//set interval
+
+            //}//for
+        }, 100);//set interval
+
+
+
+
+
+
+
     }
 
 
@@ -359,9 +422,9 @@ export default class SearchView extends View {
 
         if (this.showdetails == false || id != this.id_last) {
             this.showdetails = true;
-            var detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
-            this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: detailsmodel[0] }));//object is multidimensional, so go one layer deeper
-            this.geocodeHistoricalAddress(detailsmodel[0]); //kaartje maken in tab van details popup
+            this.detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
+            this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: this.detailsmodel[0] }));//object is multidimensional, so go one layer deeper
+            //this.geocodeHistoricalAddress(detailsmodel[0]); //kaartje maken in tab van details popup probleem: hij is verborgen en schaalt dan niet
             //console.log(detailsmodel[0]);
         }
         else {
@@ -373,7 +436,7 @@ export default class SearchView extends View {
 
     closeDetails(event) {
         //close details screen, but not when is clicked on table itself
-        if (event.target.className != '' && event.target.className != 'cell_content' && event.target.className != 'cell_title') {
+        if (event.target.className != '' && event.target.className != 'cell_content' && event.target.className != 'cell_title' && event.target.className != 'link_tab') {
             this.$('#showdetails').empty();
             this.showdetails = false;
         }
@@ -424,6 +487,8 @@ export default class SearchView extends View {
         if (id == 'link_tab_location') {
             this.$('#tab_location').show();
             this.$('#li_location').addClass("is-active"); //lijkt niet te vinden
+
+            this.geocodeHistoricalAddress(this.detailsmodel[0]);
         }
     }
 
