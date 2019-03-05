@@ -135,7 +135,6 @@ export default class SearchView extends View {
 
 
     geocodeHistoricalAddress(detailsmodel) {
-        //console.log(detailsmodel);
         // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
             zoom: 5, //lager is verder weg
@@ -143,15 +142,19 @@ export default class SearchView extends View {
         });
         let bounds = new google.maps.LatLngBounds();
         let geocoder = new google.maps.Geocoder();
-        var addresses = [];
         var location_data = [];
-        var markers = [];
-        let icon;
+        let last_location_geocoding_lat;
+        let last_location_geocoding_lng;
+        let residence_duration = 100;
+        let last_date_from;
+        let last_icon;
+        let date_from;
+        let date_until;
+        let icon_width = 40;
+        let icon_height = 40;
 
-        //dit moet ws een object worden, en enkel als kolom gevuld is toevoegen, plus de andere gegevens, want probleem: een laatste lege marker kan de vorige overlappen
-        //idee: deze array wel gebruiken, maar daarna via een loop een object pushen waar enkel data in komt als is ingevuld, en meteen erbij het tijdvak. icon kan dan later op tijdvak worden gekozen
         var addresses_all = [
-            detailsmodel['owner_and_location_1000_1100'],//historische locaties, moeten een ander soort marker krijgen
+            detailsmodel['owner_and_location_1000_1100'],
             detailsmodel['owner_and_location_1100_1200'],
             detailsmodel['owner_and_location_1200_1300'],
             detailsmodel['owner_and_location_1300_1400'],
@@ -161,77 +164,104 @@ export default class SearchView extends View {
             detailsmodel['owner_and_location_1700_1800'],
             detailsmodel['owner_and_location_1800_1900'],
             detailsmodel['owner_and_location_1900_2000'],
-            detailsmodel['address_current_location'] //de huidige locatie
+            detailsmodel['address_current_location']
         ]; //de relevante data in array zetten
 
-        var periods = ['1000-1100', '1100-1200', '1200-1300', '1300-1400', '1400-1500', '1500-1600', '1600-1700', '1700-1800', '1800-1900', '1900-2000', 'current location'];
-        var marker_icons = ['http://maps.google.com/mapfiles/ms/icons/blue-dot.png', 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'];
-
+        var periods = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 'Current Location'];
+        var marker_icons = [
+            'http://maps.google.com/mapfiles/ms/icons/purple.png',
+            'http://maps.google.com/mapfiles/ms/icons/purple.png',
+            'http://maps.google.com/mapfiles/ms/icons/blue.png',
+            'http://maps.google.com/mapfiles/ms/icons/blue.png',
+            'http://maps.google.com/mapfiles/ms/icons/lightblue.png',
+            'http://maps.google.com/mapfiles/ms/icons/lightblue.png',
+            'http://maps.google.com/mapfiles/ms/icons/green.png',
+            'http://maps.google.com/mapfiles/ms/icons/green.png',
+            'http://maps.google.com/mapfiles/ms/icons/orange.png',
+            'http://maps.google.com/mapfiles/ms/icons/orange.png',
+            'http://maps.google.com/mapfiles/ms/icons/red-pushpin.png'
+        ];
 
         for (let k = 0; k < addresses_all.length; k++) {
             if (addresses_all[k] != null && addresses_all[k] != '?' && addresses_all[k] != '-' && addresses_all[k] != '') {
-                location_data.push({ 'address': addresses_all[k], 'period': periods[k] });
+                location_data.push({ 'address': addresses_all[k], 'period': periods[k], 'icon': marker_icons[k] });
             }
         };
 
-        console.log(location_data);
-
-        //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
-        //lijkt erop dat over_query_limit ontstaat na 12 requests, dus binnen het interval er 12 kunnen loopen, dan 1 sec wachten en dan weer 12 doen?
+        //Iteration via set interval method, api call every so many miliseconds to prevent google limit, and create animation. 
+        //Interval stops when address.lenght is reached
         let i = 0;
+
         let intervalId2 = setInterval(function () {
             let address;
 
-            //let icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';//tijdelijk
-            if (i < (_.size(location_data) - 1)) {
-                icon = marker_icons[0];
-            }
-            else {
-                icon = marker_icons[1];
+            //last location is current location, somewhat larger icon
+            if (i == (_.size(location_data) - 1)) {
+                icon_width = 45;
+                icon_height = 50;
             }
 
             //idee: omdat locaties vaak dicht bij elkaar liggen, kan ook de bibliotheek worden gebruikt bij geocoding, maar dan moet de dubbele punt door komma 
             //worden vervangen Austria, Vienna, Hofbibliothek. 
+            //Largo Porta Sant'Agostino, 337, 41121 Modena MO, Italy vind hij niet.
 
-            if (i < (_.size(location_data) - 0)) {
+            console.log('i voor if:')
+            console.log(i);
+
+            if (i < (_.size(location_data))) {
+
+                console.log('i en size locationdata:')
+                console.log(i);
+                console.log(_.size(location_data));
+                //probleem blijkt: hij houdt niet altijd de volgorde aan. Het is async, dus gaat soms een latere locatie eerder, waardoor optelling niet meer klopt
                 address = location_data[i].address;
 
                 geocoder.geocode({ 'address': address }, function (results, status) {
 
                     if (status === 'OK') {
-                        //map.setCenter(results[0].geometry.location);
 
-                        //console.log(results[0].geometry.location) //lijkt leeg
+                        //add up the time periods if the manuscript stayed on one location during several periods
+                        if (results[0].geometry.location.lat() == last_location_geocoding_lat && results[0].geometry.location.lng() == last_location_geocoding_lng) { //compare locations
+                            residence_duration = residence_duration + 100;
+                            date_until = residence_duration + last_date_from;
+                            date_from = last_date_from;
+                            icon = last_icon;
+                            //prevent obvious wrongly calculated date
+                            if (date_until > 2000) {
+                                date_until = 2000;
+                            }
+                        }
+                        else {
+                            residence_duration = 100;
+                            date_until = location_data[i].period + residence_duration;
+                            date_from = location_data[i].period;
+                            icon = location_data[i].icon;
+                        }
+
+                        //for current location, icon is always a special one.
+                        if (i == (_.size(location_data) - 1)) {
+                            icon = location_data[i].icon;
+                        }
+
                         var marker = new google.maps.Marker({
                             map: map,
                             position: results[0].geometry.location, //lijkt geen ltlng te bevatten?var latitude = results[0].geometry.location.lat(); var longitude = results[0].geometry.location.lng();
                             title: results[0].formatted_address,
-                            icon: icon
+                            icon: { url: icon, scaledSize: new google.maps.Size(icon_width, icon_height), },
+                            zIndex: i //i as increasing index, current location must be on top
                         });
 
                         let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
                         map.setCenter(loc);
-
-                        //let loc = new google.maps.LatLng(51.508742, 12.120850)
-                        //let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-
-                        //bounds.extend({ lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng() });
                         bounds.extend(loc);
 
-                        console.log(results[0].geometry.location.lng());
-                        console.log(loc);
-                        console.log(bounds);
-
-                        markers.push(marker); //marker aan de array toevoegen
-
-                        console.log('resultaat:')
-                        //console.log(results)
-                        console.log(i);
-                        //console.log(location_data[i]);
-
+                        if (location_data[i].period == 'Current Location') {
+                            date_from = 'Current Location';
+                            date_until = '';
+                        }
 
                         var infowindow = new google.maps.InfoWindow({
-                            content: location_data[i].period + " : " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom?
+                            content: date_from + " - " + date_until + " : " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom? Blijkt niet altijd in volgeorde te geocoden
                         });
 
                         //infowindow.open(map, marker);
@@ -241,49 +271,44 @@ export default class SearchView extends View {
                             }
                         })(marker));
 
-
                     } else {
                         console.log('Geocode was not successful for the following reason: ' + status);
                     }
 
-                    i++; //hier ophogen, pas als er gegeocoded is,
+                    //for use in next loop to compare with new location set last geolocation
+                    last_location_geocoding_lat = results[0].geometry.location.lat();
+                    last_location_geocoding_lng = results[0].geometry.location.lng();
+                    last_date_from = date_from;
+                    last_icon = icon;
+
+                    i++; //add only if there was geocoding, its async!
 
                     map.fitBounds(bounds);
                     map.panToBounds(bounds);
-
                 }
                 );//geocode
             }//if
 
-
-            //console.log(i);
-            //console.log('size:');
-            //console.log(_.size(location_data));
-
-
-            if (i >= _.size(location_data) - 1) {  // als hij stopt loopt er toch nog een laatste, en aantal moet -1, want i start op 0 vanwege plek 0 in array
-
+            if (i >= _.size(location_data) - 1) {
                 clearInterval(intervalId2);
-
                 console.log('gestopt en markers:');
                 console.log(bounds);
-                //if more locations, then reset map, only one location results in most zoomed out world view
-                //if (_.size(location_data) > 1) {
-                // map.fitBounds(bounds);
-                // map.panToBounds(bounds);
-                //}
-
-
             }
+        }, 250);//set interval
 
-            //}//for
-        }, 100);//set interval
-
-
-
-
-
-
+        var legend = document.getElementById('legend_historical_addresses');
+        for (var key in location_data) {
+            var period = location_data[key].period;
+            var icon = location_data[key].icon;
+            var until;
+            if (period != 'Current Location') {
+                until = "-" + parseInt(period + 100);
+            }
+            else { until = '' }
+            var div = document.createElement('div');
+            div.innerHTML = '<img src="' + icon + '"> ' + period + until;
+            legend.appendChild(div);
+        }
 
     }
 
@@ -419,17 +444,18 @@ export default class SearchView extends View {
     showDetails(event) {
         event.stopPropagation();// to prevent event bubbling: the parent elements must not be affected
         var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
+        this.$('#' + this.id_last).removeClass("link_open");// 
 
         if (this.showdetails == false || id != this.id_last) {
             this.showdetails = true;
             this.detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
             this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: this.detailsmodel[0] }));//object is multidimensional, so go one layer deeper
-            //this.geocodeHistoricalAddress(detailsmodel[0]); //kaartje maken in tab van details popup probleem: hij is verborgen en schaalt dan niet
-            //console.log(detailsmodel[0]);
+            this.$('#' + id).addClass("link_open");
         }
         else {
             this.closeDetails(event);
         }
+
 
         this.id_last = id;
     }
@@ -439,6 +465,7 @@ export default class SearchView extends View {
         if (event.target.className != '' && event.target.className != 'cell_content' && event.target.className != 'cell_title' && event.target.className != 'link_tab') {
             this.$('#showdetails').empty();
             this.showdetails = false;
+            this.$('#' + this.id_last).removeClass("link_open");// 
         }
         //console.log(event.target.className);
     }
