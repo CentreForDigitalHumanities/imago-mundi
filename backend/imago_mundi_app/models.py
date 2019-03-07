@@ -19,6 +19,13 @@ class ImagoMundi(models.Model):
 
     place_of_origin = models.TextField(null=True, blank=True)
 
+    # toegevoegd 7 maart
+    place_of_origin_country = models.CharField(
+        max_length=200, null=True, blank=True)
+
+    place_of_origin_town = models.CharField(
+        max_length=200, null=True, blank=True)
+
     # owner and location textvelden van gemaakt, bleek soms veel data te hebben
     owner_and_location_1000_1100 = models.TextField(null=True, blank=True)
     owner_and_location_1100_1200 = models.TextField(null=True, blank=True)

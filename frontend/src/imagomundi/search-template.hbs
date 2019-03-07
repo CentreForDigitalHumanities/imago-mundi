@@ -68,8 +68,18 @@
                     </div>
 
                     <div class="select is-info is-small">
+                        <select name="place_of_origin_country" id="place_of_origin_country">
+                            <option value="">Country of origin</option>
+                            {{#each countries_of_origin_select}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+
+                    <div class="select is-info is-small">
                         <select name="current_location_country" id="current_location_country">
-                            <option value="">Country</option>
+                            <option value="">Current country</option>
                             {{#each countries_select}}
                             <option value="{{this}}">{{this}}</option>
                             {{/each}}
@@ -119,89 +129,11 @@
 
         </div>
 
-        {{!-- <div id="countresult"></div> --}}
 
-        {{!-- Dit werkt, geeft alle keys, maar wordt veel te breed
-        <div id="keys">
-            {{#each table_keys }}
-            {{@key}}
-            {{/each}}
-
-        </div> --}}
-
-
-        {{!-- <div id="map"></div> --}}
         <div id='map'></div>
 
         <div id="showdetails"></div>
         <table class="table is-bordered is-fullwidth" id="searchresult"></table>
-
-
-        {{!-- <script>
-            function initMap() {
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 6,
-                    center: { lat: 51.4, lng: 11.4 }
-                });
-
-                addresses = [
-                    "Kirchplatz 1, 8911 Admont, Austria",
-                    "Stift Göttweig 1, 3511 Furth bei Göttweig, Austria",
-                    "Keizerslaan 4, 1000 Brussel, Belgium"
-                ]
-
-
-
-                var geocoder = new google.maps.Geocoder();
-                geocodeAddress(geocoder, map, addresses);
-            }
-
-            function geocodeAddress(geocoder, resultsMap, addresses) {
-
-                for (var i = 0; i < addresses.length; i++) {
-                    console.log(addresses[i]);
-                    var address = addresses[i];
-
-                    geocoder.geocode({ 'address': address }, function (results, status) {
-
-                        if (status === 'OK') {
-                            resultsMap.setCenter(results[0].geometry.location);
-                            var marker = new google.maps.Marker({
-                                map: resultsMap,
-                                position: results[0].geometry.location,
-                                title: results[0].formatted_address
-
-                            });
-
-                            console.log(results)
-
-                            var infowindow = new google.maps.InfoWindow({
-                                content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
-                            });
-
-                            //infowindow.open(map, marker);
-
-                            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                                return function () {
-                                    infowindow.open(map, marker);
-                                }
-                            })(marker, i));
-
-
-
-                        } else {
-                            alert('Geocode was not successful for the following reason: ' + status);
-                        }
-                    });
-                }
-
-            }
-        </script>
-
-
-        <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDgX74zbp9VgGg_SnzjPkbI6-PUH_WqT8&callback=initMap">
-            </script> --}}
 
     </hgroup>
 </section>

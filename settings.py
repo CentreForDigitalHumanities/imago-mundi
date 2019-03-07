@@ -1,3 +1,6 @@
+from settings import *
+from importlib import util, machinery
+import sys
 """ This is magic glue for integrating the frontend and backend.
 
     This is NOT the place for backend customizations. Go to
@@ -15,8 +18,6 @@ here = op.dirname(op.abspath(__file__))
 # https://stackoverflow.com/a/29855240
 # (respectively for Python >= 3.5 and Python 3.4)
 
-import sys
-from importlib import util, machinery
 
 settings_name = 'settings'
 settings_path = op.join(here, 'backend', 'finding_imago_mundi', 'settings.py')
@@ -26,12 +27,12 @@ if sys.version_info >= (3, 5):
     settings = util.module_from_spec(spec)
     spec.loader.exec_module(settings)
 else:
-    settings = machinery.SourceFileLoader(settings_name, settings_path).load_module()
+    settings = machinery.SourceFileLoader(
+        settings_name, settings_path).load_module()
 
 sys.modules[settings_name] = settings
 
 from settings import *
-
 # Next, augment the settings to make the backend aware of the frontend.
 
 STATICFILES_DIRS += [

@@ -23,6 +23,7 @@ export default class SearchView extends View {
     initialSearchCollection: Collection;
     filterOptionsCollection = new ImagoMundiCollection;
     current_location_countries: String[] = [];
+    place_of_origin_country: String[] = [];
     languages: String[] = [];
     table_keys: String[] = [];
     showdetails: boolean = false;
@@ -54,7 +55,7 @@ export default class SearchView extends View {
     //     this.geocodeCurrentAddress(geocoder, map);
     // }
 
-
+    //general map
     geocodeCurrentAddress() {
 
         // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
@@ -81,14 +82,10 @@ export default class SearchView extends View {
         };
 
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
-        //lijkt erop dat over_query_limit ontstaat na 12 requests, dus binnen het interval er 12 kunnen loopen, dan 1 sec wachten en dan weer 12 doen?
         let i = 0;
         let intervalIdCurrent = setInterval(function () {
 
-            let address = addresses[i];// via let wordt address telkens een neiuwe variable, anders werd hij nooit vernieuwd als timeout werd gebruikt, dan kreeg je meteen de laatste in array
-
-            console.log('gaat dit geocoden:')
-            console.log(address)
+            let address = addresses[i]
 
             geocoder.geocode({ 'address': address }, function (results, status) {
 
@@ -103,16 +100,15 @@ export default class SearchView extends View {
                         title: results[0].formatted_address
                     });
 
-                    console.log('teller:')
-                    console.log(i)
-                    console.log('resultaat:')
-                    console.log(results)
+                    // console.log('teller:')
+                    // console.log(i)
+                    // console.log('resultaat:')
+                    // console.log(results)
 
                     var infowindow = new google.maps.InfoWindow({
                         content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
                     });
 
-                    //infowindow.open(map, marker);
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {
                         return function () {
                             infowindow.open(map, marker);
@@ -133,11 +129,10 @@ export default class SearchView extends View {
     }
 
 
-
+    //details map
     geocodeHistoricalAddress(detailsmodel) {
-        // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
-            zoom: 5, //lager is verder weg
+            zoom: 5, //lower is a higher view
             center: { lat: 51.4, lng: 11.4 }
         });
         let bounds = new google.maps.LatLngBounds();
@@ -165,7 +160,7 @@ export default class SearchView extends View {
             detailsmodel['owner_and_location_1800_1900'],
             detailsmodel['owner_and_location_1900_2000'],
             detailsmodel['address_current_location']
-        ]; //de relevante data in array zetten
+        ];
 
         var periods = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 'Current Location'];
         var marker_icons = [
@@ -245,7 +240,7 @@ export default class SearchView extends View {
 
                         var marker = new google.maps.Marker({
                             map: map,
-                            position: results[0].geometry.location, //lijkt geen ltlng te bevatten?var latitude = results[0].geometry.location.lat(); var longitude = results[0].geometry.location.lng();
+                            position: results[0].geometry.location,
                             title: results[0].formatted_address,
                             icon: { url: icon, scaledSize: new google.maps.Size(icon_width, icon_height), },
                             zIndex: i //i as increasing index, current location must be on top
@@ -317,7 +312,7 @@ export default class SearchView extends View {
 
 
     search(event) {
-        var self = this; // pass the class this as self, because jquery has its own this
+        var self = this; // pass the class this as self, because jquery has its own 'this'
         event.preventDefault();
         this.collection.fetch({
             data: { search: this.$('#search').val() },
@@ -339,8 +334,7 @@ export default class SearchView extends View {
         this.collection.set(this.initialSearchCollection.models);//first reset to original collection
         this.filterCountryLanguage();
         this.filterDates();
-        //this.prepareAddresses();
-        //this.initMap();
+        this.filterPlaceOfOriginCountry();
         this.geocodeCurrentAddress();
         return this.collection.toJSON();
     }
@@ -381,26 +375,31 @@ export default class SearchView extends View {
         }
     }
 
+    filterPlaceOfOriginCountry() {
+        var place_of_origin_country_value = this.$("#place_of_origin_country").val();
+        if (place_of_origin_country_value != '') {
+            this.collection.set(this.collection.where({ place_of_origin_country: place_of_origin_country_value }));
+        }
+    }
+
+
     //just once called from imagomundi.ts, get collection to create dynamically the filter select options, and append the template
     render() {
         var self = this;
-
+        //async call 
         this.filterOptionsCollection.fetch({
             success: function (filterOptionsCollection, response, options) {
                 //filter unique on language and countrylocation 
-
                 self.prepareCountriesFilter();
                 self.prepareLanguagesFilter();
-                //self.table_keys = self.filterOptionsCollection.at(1).attributes;
+                self.preparePlacesOfOriginFilter();
 
                 self.$el.html(self.template({
                     countries_select: self.current_location_countries,
                     languages_select: self.languages,
+                    countries_of_origin_select: self.place_of_origin_country,
                     addresses: ['address1', 'addres2'],
-                    //table_keys: self.table_keys //werkt, maar tabel veel te breed, moet onder elkaar
                 }));
-
-                //self.initMap();
 
             },
             error: function (collection, response, options) {
@@ -423,6 +422,12 @@ export default class SearchView extends View {
         this.languages = _.uniq(this.filterOptionsCollection.pluck("language"));
         this.languages = remove(this.languages, function (n) { return n != ""; });//remove empty
         this.languages.sort();
+    }
+
+    preparePlacesOfOriginFilter() {
+        this.place_of_origin_country = _.uniq(this.filterOptionsCollection.pluck("place_of_origin_country"));//select attribute and keep unique
+        this.place_of_origin_country = remove(this.place_of_origin_country, function (n) { return n != ""; });//remove empty
+        this.place_of_origin_country.sort();
     }
 
     //get unique adresses en put them in array for google map
@@ -486,6 +491,7 @@ export default class SearchView extends View {
         event.preventDefault();
         $('#language').prop('selectedIndex', 0);
         $('#current_location_country').prop('selectedIndex', 0);
+        $('#place_of_origin_country').prop('selectedIndex', 0);
         $('#date_from').prop('selectedIndex', 0);
         $('#date_until').prop('selectedIndex', 0);
         this.applyFilters();
@@ -519,6 +525,12 @@ export default class SearchView extends View {
         }
     }
 
+    //to trigger event when enter key is pressed
+    filterEnterKey(event) {
+        if (event.which == 13) {
+            this.search(event);
+        }
+    }
 
 }
 
@@ -528,10 +540,12 @@ extend(SearchView.prototype, {
     template: searchTemplate,
     events: {
         'click #search_button': 'search',
-        'click #current_location_country': 'applyFilters',
-        'click #language': 'applyFilters',
-        'click #date_from': 'applyFilters',
-        'click #date_until': 'applyFilters',
+        'keypress #search': 'filterEnterKey',
+        'change #current_location_country': 'applyFilters',
+        'change #place_of_origin_country': 'applyFilters',
+        'change #language': 'applyFilters',
+        'change #date_from': 'applyFilters',
+        'change #date_until': 'applyFilters',
         'click .details': 'showDetails',
         'click #help_button': 'showHelp',
         'click #close_button': 'closeHelp',
