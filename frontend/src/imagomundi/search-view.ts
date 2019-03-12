@@ -3,6 +3,7 @@ import { extend, remove } from 'lodash';
 import View from '../core/view';
 import resultTemplate from './searchresult-template';
 import searchTemplate from './search-template';
+import aboutTemplate from './about-template';
 import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
@@ -19,7 +20,7 @@ export default class SearchView extends View {
     template = searchTemplate;
     resultTemplate = resultTemplate;
     detailsTemplate = detailsTemplate;
-    //mapTemplate = mapTemplate;
+    aboutTemplate = aboutTemplate;
     initialSearchCollection: Collection;
     filterOptionsCollection = new ImagoMundiCollection;
     current_location_countries: String[] = [];
@@ -27,6 +28,7 @@ export default class SearchView extends View {
     languages: String[] = [];
     table_keys: String[] = [];
     showdetails: boolean = false;
+    showabout: boolean = false;
     id_last: Number;
     detailsmodel: Model;
     //intervalId: any;
@@ -41,19 +43,6 @@ export default class SearchView extends View {
     initialize() {
         this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
     }
-
-
-    //dit werkt. Probleem is nog dat de objecten niet door typescript als types worden herkend, dus ik kan ze enkel als parameters doorgeven. Hoe anders?
-    // initMap() {
-    //     // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
-    //     var map = new google.maps.Map($('#map').get(0), { //this is er van af, enkel dan herkent hij hem, waarschijnlijk omdat hij nu in de index staat. Todo: verplaatsen
-    //         zoom: 4, //lager is verder weg
-    //         center: { lat: 51.4, lng: 11.4 }
-    //     });
-
-    //     var geocoder = new google.maps.Geocoder();
-    //     this.geocodeCurrentAddress(geocoder, map);
-    // }
 
     //general map
     geocodeCurrentAddress() {
@@ -133,7 +122,9 @@ export default class SearchView extends View {
     geocodeHistoricalAddress(detailsmodel) {
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
             zoom: 5, //lower is a higher view
-            center: { lat: 51.4, lng: 11.4 }
+            maxZoom: 16, //zoom not further then this
+            center: { lat: 51.4, lng: 11.4 },
+            streetViewControl: false,
         });
         let bounds = new google.maps.LatLngBounds();
         let geocoder = new google.maps.Geocoder();
@@ -430,13 +421,6 @@ export default class SearchView extends View {
         this.place_of_origin_country.sort();
     }
 
-    //get unique adresses en put them in array for google map
-    // prepareAddresses() {
-    //     var addresses = _.uniq(this.collection.pluck("address_current_location"));
-    //     addresses = remove(addresses, function (n) { return n != ""; });//remove empty
-
-    //     console.log(addresses)
-    // }
 
     update_searchresult() {
         this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
@@ -466,13 +450,29 @@ export default class SearchView extends View {
     }
 
     closeDetails(event) {
-        //close details screen, but not when is clicked on table itself
-        if (event.target.className != '' && event.target.className != 'cell_content' && event.target.className != 'cell_title' && event.target.className != 'link_tab') {
+        //close details screen, but not when is clicked on table itself, or at the parts of the tabs
+        if (event.target.className != '' && event.target.className != 'cell_content' &&
+            event.target.className != 'cell_title' && event.target.className != 'link_tab' && event.target.className[0] != "f" &&
+            event.target.className != 'gm-control-active' //the google map zoom button
+        ) {
             this.$('#showdetails').empty();
             this.showdetails = false;
-            this.$('#' + this.id_last).removeClass("link_open");// 
+            this.$('#' + this.id_last).removeClass("link_open");//the oval around the 'i' to indicate to which line it belongs
         }
-        //console.log(event.target.className);
+        //console.log(event.target.className[0]); //geeft eerste letter classname
+    }
+
+
+    about(event) {
+        if (this.showabout == false) {
+            this.showabout = true;
+            this.$('#about_modal').html(this.aboutTemplate({}));
+        }
+        else {
+            this.showabout = false;
+            this.$('#about_modal').empty();
+        }
+
     }
 
 
@@ -511,7 +511,7 @@ export default class SearchView extends View {
 
         if (id == 'link_tab_content') {
             this.$('#tab_content').show();
-            this.$('#li_content').addClass("is-active");// wordt wel gevonden
+            this.$('#li_content').addClass("is-active");
         }
         if (id == 'link_tab_details') {
             this.$('#tab_details').show();
@@ -519,9 +519,12 @@ export default class SearchView extends View {
         }
         if (id == 'link_tab_location') {
             this.$('#tab_location').show();
-            this.$('#li_location').addClass("is-active"); //lijkt niet te vinden
-
+            this.$('#li_location').addClass("is-active");
             this.geocodeHistoricalAddress(this.detailsmodel[0]);
+        }
+        if (id == 'link_tab_images') {
+            this.$('#tab_images').show();
+            this.$('#li_images').addClass("is-active");
         }
     }
 
@@ -554,6 +557,8 @@ extend(SearchView.prototype, {
         'click .modal-background': 'closeHelp',
         'click #reset_button': 'resetFilters',
         'click .link_tab': 'changeTabs',
+        'click #about_button': 'about',
+        'click #close_about_button': 'about'
 
     },
 });

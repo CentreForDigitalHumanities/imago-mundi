@@ -7,7 +7,7 @@
             <li class="tab is-active" id="li_content">
                 <a id="link_tab_content" class="link_tab">
                     <span class="icon is-small"><i class="fa fa-file" aria-hidden="true"></i></span>
-                    <span>Content</span>
+                    <span>Overview</span>
                 </a>
             </li>
             <li class="tab" id="li_details">
@@ -43,57 +43,97 @@
             {{#detailsmodel}}
 
             <tr>
-                <td class="cell_title" style="width:70%;">
+                <td colspan='2' class="cell_title" style="width:70%;">
                     Title:
                 </td>
-                <td rowspan="10" class=" cell_content" style="text-align: center; width:30%;"><img src="{{images}}"
-                        alt="{{images}}" style="height:300px;">
-                </td>
 
             </tr>
             <tr>
-                <td class="cell_content">{{title}} </td>
+                <td colspan='2' class="cell_content">{{title}} </td>
 
             </tr>
 
             <tr>
-                <td class="cell_title">
+                <td colspan='2' class="cell_title">
                     Shelfmark:
                 </td>
             </tr>
             <tr>
-                <td class="cell_content">{{shelfmark}}</td>
+                <td colspan='2' class="cell_content">{{shelfmark}}</td>
             </tr>
 
+            <tr>
+                <td colspan='2' class="cell_title">
+                    Language:
+                </td>
+            </tr>
+            <tr>
+                <td colspan='2' class="cell_content">{{language}}</td>
+            </tr>
 
             <tr>
-                <td class="cell_title">
-                    Manuscript Content:
+                <td colspan='2' class="cell_title">
+                    Text type:
+                </td>
+            </tr>
+            <tr>
+                <td colspan='2' class="cell_content">{{text_type}}</td>
+            </tr>
+
+            <tr>
+                <td colspan='2' class="cell_title">
+                    Folia:
+                </td>
+            </tr>
+            <tr>
+                <td colspan='2' class="cell_content">{{folia}}</td>
+            </tr>
+
+            <tr>
+                <td colspan='2' class="cell_title">
+                    Historical Locations:
                 </td>
             </tr>
 
             <tr>
-                <td class="cell_content"> {{manuscript_content}}</td>
-            </tr>
-
-            <tr>
-                <td class="cell_title">
-                    Bibliography:
-                </td>
-            </tr>
-
-            <tr>
-                <td class="cell_content"> {{bibliography}}</td>
-            </tr>
-
-
-            <tr>
-                <td class="cell_title">
-                    Notes:
-                </td>
+                <td>owner and location 1000-1100</td>
+                <td>{{owner_and_location_1000_1100}}</td>
             </tr>
             <tr>
-                <td class="cell_content"> {{notes}}</td>
+                <td>owner and location 1100-1200</td>
+                <td>{{owner_and_location_1100_1200}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1200-1300</td>
+                <td>{{owner_and_location_1200_1300}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1300-1400</td>
+                <td>{{owner_and_location_1300_1400}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1400-1500</td>
+                <td>{{owner_and_location_1400_1500}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1500-1600</td>
+                <td>{{owner_and_location_1500_1600}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1600-1700</td>
+                <td>{{owner_and_location_1600_1700}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1700-1800</td>
+                <td>{{owner_and_location_1700_1800}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1800-1900</td>
+                <td>{{owner_and_location_1800_1900}}</td>
+            </tr>
+            <tr>
+                <td>owner and location 1900-2000</td>
+                <td>{{owner_and_location_1900_2000}}</td>
             </tr>
 
             {{/detailsmodel}}
@@ -149,22 +189,7 @@
                 <td>{{place_of_origin_town}}</td>
             </tr>
 
-            <tr>
-                <td>language</td>
-                <td>{{language}}</td>
-            </tr>
-            <tr>
-                <td>images</td>
-                <td><a href="{{images}}" target="_blank">{{images}}</a></td>
-            </tr>
-            <tr>
-                <td>text type</td>
-                <td>{{text_type}}</td>
-            </tr>
-            <tr>
-                <td>folia</td>
-                <td>{{folia}}</td>
-            </tr>
+
             <tr>
                 <td>chapters</td>
                 <td>{{chapters}}</td>
@@ -185,45 +210,19 @@
                 <td>decorations</td>
                 <td>{{decorations}}</td>
             </tr>
+
             <tr>
-                <td>owner and location 1000-1100</td>
-                <td>{{owner_and_location_1000_1100}}</td>
+                <td>content:</td>
+                <td> {{manuscript_content}}</td>
             </tr>
             <tr>
-                <td>owner and location 1100-1200</td>
-                <td>{{owner_and_location_1100_1200}}</td>
+                <td>bibliography:</td>
+                <td> {{bibliography}}</td>
             </tr>
+
             <tr>
-                <td>owner and location 1200-1300</td>
-                <td>{{owner_and_location_1200_1300}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1300-1400</td>
-                <td>{{owner_and_location_1300_1400}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1400-1500</td>
-                <td>{{owner_and_location_1400_1500}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1500-1600</td>
-                <td>{{owner_and_location_1500_1600}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1600-1700</td>
-                <td>{{owner_and_location_1600_1700}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1700-1800</td>
-                <td>{{owner_and_location_1700_1800}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1800-1900</td>
-                <td>{{owner_and_location_1800_1900}}</td>
-            </tr>
-            <tr>
-                <td>owner and location 1900-2000</td>
-                <td>{{owner_and_location_1900_2000}}</td>
+                <td>notes:</td>
+                <td> {{notes}}</td>
             </tr>
             {{/detailsmodel}}
         </table>
@@ -231,13 +230,25 @@
     </div>
 
 
-
-
-
     <div id="tab_location" class="content-tab" style="display:none">
         <div id='map_historical_addresses'></div>
         <div id='legend_historical_addresses'></div>
     </div>
+
+
+    <div id="tab_images" class="content-tab" style="display:none">
+
+        <table class="table is-bordered is-fullwidth ">
+            <tr>
+                <td style="padding-top: 30px; padding-bottom: 30px; font-size: 1.2em"><a href="{{detailsmodel.images}}"
+                        target="_blank">{{detailsmodel.images}}</a>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
 
 
 

@@ -3,7 +3,11 @@
 <section class="hero is-fullheight imagomundi_background ">
 
     <hgroup class="container imagomundi_searchscreen">
+        <button class="button is-link" id="about_button">
+            about
+        </button>
 
+        <div id="about_modal"></div>
 
         <div class='titlebox has-text-centered' id='titlebox'>
             <h1>Images of the World</h1>
@@ -20,14 +24,20 @@
                 </header>
                 <section class="modal-card-body">
                     <p>
-                        Type a search word. You can limit your search by typing words seperated by a whitespace or a
-                        comma like: London, Harley.<br><br>
+                        Type a search word. You can specify your search by typing more words seperated by a whitespace
+                        or a comma like: London, Harley. You can also do a search using the filters only. Just select a
+                        filter and click search with an empty search field<br><br>
                     </p>
                     <p>
-                        Filter your results with the selectboxes.<br><br>
+                        Filter your results with the selectboxes om language of the manuscript, country of origin, the
+                        current country of residence, or the dates of origin. To reset all filters, click 'Reset
+                        Filters'<br><br>
                     </p>
                     <p>
-                        For details, click the info in front of every search result.<br><br>
+                        Click the info 'i' in front of every result to open the details screen.
+                        This will show tabs with general information about the manuscript, detail information, a
+                        map with the historical
+                        locations and a link to pictures of the manuscript if available<br><br>
                     </p>
 
 
@@ -58,7 +68,7 @@
 
                 <div class="field is-grouped">
 
-                    <div class="select  is-info is-small">
+                    <div class="select  is-info is-small is-fullwidth">
                         <select name="language" id="language">
                             <option value="">Language</option>
                             {{#each languages_select}}
@@ -67,7 +77,7 @@
                         </select>
                     </div>
 
-                    <div class="select is-info is-small">
+                    <div class="select is-info is-small is-fullwidth">
                         <select name="place_of_origin_country" id="place_of_origin_country">
                             <option value="">Country of origin</option>
                             {{#each countries_of_origin_select}}
@@ -77,7 +87,7 @@
                     </div>
 
 
-                    <div class="select is-info is-small">
+                    <div class="select is-info is-small is-fullwidth">
                         <select name="current_location_country" id="current_location_country">
                             <option value="">Current country</option>
                             {{#each countries_select}}
@@ -86,8 +96,12 @@
                         </select>
                     </div>
 
+                </div>
 
-                    <div class="select  is-info is-small">
+
+                <div class="field is-grouped ">
+
+                    <div class="select  is-info is-small is-fullwidth">
                         <select name="date_from" id="date_from">
                             <option value="">date from</option>
                             <option value="1000">1000</option>
@@ -103,7 +117,7 @@
                         </select>
                     </div>
 
-                    <div class="select  is-info is-small">
+                    <div class="select  is-info is-small is-fullwidth">
                         <select name="date_until" id="date_until">
                             <option value="">date until</option>
                             <option value="1100">1100</option>
@@ -119,12 +133,11 @@
                         </select>
                     </div>
 
-                    <p class="control">
-                        <button class="button is-info is-small" id="reset_button">reset</button>
+
+                    <p class="control ">
+                        <button class="button is-info is-small is-pulled-right" id="reset_button">Reset Filters</button>
                     </p>
-
                 </div>
-
             </form>
 
         </div>

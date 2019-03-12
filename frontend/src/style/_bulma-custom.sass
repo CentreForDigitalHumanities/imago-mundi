@@ -1,6 +1,9 @@
 @charset "utf-8"
 /*! bulma.io v0.7.1 | MIT License | github.com/jgthms/bulma */
 
+
+
+
 // Customizations for finding imago mundi: uncomment the modules that you need.
 
 @import "bulma/sass/utilities/_all"
@@ -66,7 +69,8 @@
     .modal-imagomundi
         :top 2%
         :width 80%
-        :left 10% 
+        :left 10%
+
 
 @media only screen and (max-width: 1100px) 
     .modal-imagomundi
@@ -93,12 +97,12 @@
 
 .cell_content
     :font-size 14px !important
-    :line-height 18px
-    :padding-bottom 0.8em !important
+    :line-height 14px
+    :padding-bottom 0.4em !important
 
 .cell_title
-    :padding-top 1.2em !important
-    :padding-bottom 0.6em !important
+    :padding-top 1em !important
+    :padding-bottom 0.4em !important
     :font-size 14px !important
     :font-weight bold
 
@@ -107,7 +111,7 @@
     :height: 
 
 .titlebox
-    :margin-top 12%
+    :margin-top 8%
 
 .titlebox h1 
     :font-size 4em
@@ -179,5 +183,36 @@ a.details
     :padding 5px
     :font-size 10px
 
+#about_button
+    :background #c94504
 
-.imagomundi_searchscreen
+#about_button:hover
+    :background #db6023
+
+.about_page
+    :left 20%
+    :border-radius 5px
+    :padding 25px
+    :margin 10px
+    :background #fff
+    :position absolute
+    :width 60%
+    :z-index 100
+    :overflow auto
+
+@media only screen and (max-width: 1500px)
+    .about_page
+        :width 75%
+        :left 0%
+
+@media only screen and (max-width: 800px)
+     .about_page
+        :width 93%
+        :left 0%
+            
+.about_page h1 
+    :font-size 1.5em
+    :line-height 2em
+
+.about_page p
+    :padding-bottom 15px
