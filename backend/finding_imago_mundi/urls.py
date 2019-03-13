@@ -31,5 +31,7 @@ urlpatterns = [
         'rest_framework.urls',
         namespace='rest_framework',
     )),
+    # temporally the geocode here
+    url(r'^geocode/', views.geocode, name='geocode'),
     url(r'', index),  # catch-all; unknown paths to be handled by a SPA
 ]

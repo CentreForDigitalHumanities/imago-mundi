@@ -8,6 +8,7 @@ class ImagoMundiSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'shelfmark', 'date_from', 'date_until',
                   'current_location_country', 'current_location_town',
                   'address_current_location', 'place_of_origin_country', 'place_of_origin_town',
+                  'current_location_lat', 'current_location_lng',
                   'owner_and_location_1000_1100',
                   'owner_and_location_1100_1200',
                   'owner_and_location_1200_1300',

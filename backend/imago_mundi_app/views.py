@@ -6,6 +6,8 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework import filters
 from django.contrib.postgres.search import SearchQuery
+from django.http import HttpResponse
+from geopy.geocoders import Nominatim
 
 # Create your views here.
 
@@ -60,3 +62,32 @@ class ImagoMundiViewSet(viewsets.ModelViewSet):
 # search_fields = ('=username', '=email')
 
     #queryset = ImagoMundi.objects.filter(place_of_origin=searchterm)
+
+
+def geocode(request):
+    print('gaat geocoden')
+
+    #results = ImagoMundi.objects.all()
+
+    # geocode only fields that are still empty
+    results = ImagoMundi.objects.filter(current_location_lat__isnull=True)
+
+    for result in results:
+        try:
+            print(result.id)
+            print('database address: ' + result.address_current_location)
+
+            geolocator = Nominatim(user_agent="ImagoMundi")
+            location = geolocator.geocode(result.address_current_location)
+            print(location.address)
+            print((location.latitude, location.longitude))
+
+            result.current_location_lat = location.latitude
+            result.current_location_lng = location.longitude
+            result.save()
+
+        except:
+            print('decode error')
+
+    html = "<html><body>Geocode</body></html>"
+    return HttpResponse(html)

@@ -50,71 +50,71 @@ export default class SearchView extends View {
         // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
         var map = new google.maps.Map($('#map').get(0), { //this is er van af, enkel dan herkent hij hem, waarschijnlijk omdat hij nu in de index staat. Todo: verplaatsen
             zoom: 4, //lager is verder weg
+            maxZoom: 14, //zoom not further then this
             center: { lat: 51.4, lng: 11.4 }
         });
 
-        var geocoder = new google.maps.Geocoder();
-        var addresses = [];
-        var geocode_max = 12;
-        var addresses_all = _.uniq(this.collection.pluck("address_current_location"));
-        addresses_all = remove(addresses_all, function (n) { return n != ""; });//remove empty
+        var addresses_lat_lng = [];
+        let bounds = new google.maps.LatLngBounds();
 
-        //Geocoding API: 50 requests per second (QPS), calculated as the sum of client-side and server-side queries.
-        //aantal adressen dus beperken.
-        //een max aantal is ook nog niet voldoende, schijnt dat het niet te snel achter elkaar mag. Daarom ook een timeout erin
-        if (addresses_all.length < geocode_max) {
-            geocode_max = addresses_all.length;
-        }
+        addresses_lat_lng = _.map(this.collection.models, function (model) {
+            var lat_lng = {};
+            lat_lng['lat'] = Number(model.get('current_location_lat'));
+            lat_lng['lng'] = Number(model.get('current_location_lng'));
+            lat_lng['address'] = model.get('address_current_location');
+            lat_lng['title'] = model.get('title');
+            lat_lng['shelfmark'] = model.get('shelfmark');
+            return lat_lng;
+        });
 
-        for (let k = 0; k < geocode_max; k++) {
-            addresses.push(addresses_all[k]);
-        };
+        addresses_lat_lng = _.uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //vergelijkt de strings in het object houdt uniek over
+        addresses_lat_lng = remove(addresses_lat_lng, function (n) { return n.lat != ""; });//remove if lat is empty
 
-        //Iteration via set interval method, api call every so many miliseconds to prevent google limit. Interval stops when address.lenght is reached
+        console.log(addresses_lat_lng);
+
         let i = 0;
         let intervalIdCurrent = setInterval(function () {
 
-            let address = addresses[i]
+            var Latlng = new google.maps.LatLng(addresses_lat_lng[i]);
+            var marker = new google.maps.Marker({
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/purple-pushpin.png',
+                position: Latlng,
+                title: addresses_lat_lng[i].title
+            });
 
-            geocoder.geocode({ 'address': address }, function (results, status) {
+            bounds.extend(Latlng);
 
-                if (status === 'OK') {
-                    map.setCenter(results[0].geometry.location);
-                    //dit is nog lastig, want hij zet hem dus op het laatste resultaat van de loop
-                    //https://stackoverflow.com/questions/15719951/auto-center-map-with-multiple-markers-in-google-maps-api-v3
+            console.log('teller:')
+            console.log(i)
+            console.log('resultaat:')
+            console.log(addresses_lat_lng[i])
 
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location,
-                        title: results[0].formatted_address
-                    });
+            var content = "<b><font size='3'> " + addresses_lat_lng[i].title + "</font></b> <br><br>shelfmark:<br> <font size='1'>" + addresses_lat_lng[i].shelfmark + "</font><br><br> address:<br><font size='1'>" + addresses_lat_lng[i].address
 
-                    // console.log('teller:')
-                    // console.log(i)
-                    // console.log('resultaat:')
-                    // console.log(results)
+            var infowindow = new google.maps.InfoWindow({
+                //content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
+                content: content
+            });
 
-                    var infowindow = new google.maps.InfoWindow({
-                        content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
-                    });
-
-                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                        return function () {
-                            infowindow.open(map, marker);
-                        }
-                    })(marker, i));
-
-                } else {
-                    console.log('Geocode was not successful for the following reason: ' + status);
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                return function () {
+                    infowindow.open(map, marker);
                 }
-            }
-            );//geocode
+            })(marker, i));
 
-            if (i === addresses.length - 1) {
+
+
+            if (i === addresses_lat_lng.length - 1) {
                 clearInterval(intervalIdCurrent);
             }
             i++;
-        }, 200);//set interval
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+
+        }, 50);//set interval
+
     }
 
 
@@ -187,12 +187,7 @@ export default class SearchView extends View {
                 icon_height = 50;
             }
 
-            //idee: omdat locaties vaak dicht bij elkaar liggen, kan ook de bibliotheek worden gebruikt bij geocoding, maar dan moet de dubbele punt door komma 
-            //worden vervangen Austria, Vienna, Hofbibliothek. 
-            //Largo Porta Sant'Agostino, 337, 41121 Modena MO, Italy vind hij niet.
 
-            console.log('i voor if:')
-            console.log(i);
 
             if (i < (_.size(location_data))) {
 
@@ -245,9 +240,12 @@ export default class SearchView extends View {
                             date_from = 'Current Location';
                             date_until = '';
                         }
+                        else {
+                            date_until = "- " + date_until;
+                        }
 
                         var infowindow = new google.maps.InfoWindow({
-                            content: date_from + " - " + date_until + " : " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom? Blijkt niet altijd in volgeorde te geocoden
+                            content: "<b><font size='3'>" + date_from + "" + date_until + "</font></b> <br> " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom? Blijkt niet altijd in volgeorde te geocoden
                         });
 
                         //infowindow.open(map, marker);

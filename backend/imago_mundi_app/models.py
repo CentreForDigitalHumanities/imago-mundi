@@ -11,10 +11,14 @@ class ImagoMundi(models.Model):
         max_length=200, null=True, blank=True)
     current_location_town = models.CharField(
         max_length=200, null=True, blank=True)
-
-    # nieuw toegvoegd
     address_current_location = models.TextField(null=True, blank=True)
     place_id = models.CharField(
+        max_length=200, null=True, blank=True)
+
+    # 13 maart
+    current_location_lat = models.CharField(
+        max_length=200, null=True, blank=True)
+    current_location_lng = models.CharField(
         max_length=200, null=True, blank=True)
 
     place_of_origin = models.TextField(null=True, blank=True)
@@ -22,7 +26,6 @@ class ImagoMundi(models.Model):
     # toegevoegd 7 maart
     place_of_origin_country = models.CharField(
         max_length=200, null=True, blank=True)
-
     place_of_origin_town = models.CharField(
         max_length=200, null=True, blank=True)
 
