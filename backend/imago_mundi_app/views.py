@@ -6,8 +6,10 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework import filters
 from django.contrib.postgres.search import SearchQuery
-from django.http import HttpResponse
+#from django.http import HttpResponse
+from django.shortcuts import redirect
 from geopy.geocoders import Nominatim
+from django.contrib import messages
 
 # Create your views here.
 
@@ -39,55 +41,29 @@ class ImagoMundiViewSet(viewsets.ModelViewSet):
                      'manuscript_content', 'bibliography',
                      'notes')
 
-    # def get_queryset(self):
-    #      # get variable ophalen
-    #     searchterm = self.request.query_params.get('search')
-    #     # print(searchterm)
-    #     return ImagoMundi.objects.filter(language=searchterm)  # dit werkt
-
-    # https://czep.net/17/full-text-search.html
-
-    # The SearchFilter class will only be applied if the view has a search_fields attribute set. The search_fields attribute should be a list of names of text type fields on the model, such as CharField or TextField.
-    # https://www.django-rest-framework.org/api-guide/filtering/
-
-#     By default, searches will use case-insensitive partial matches. The search parameter may contain multiple search terms, which should be whitespace and/or comma separated. If multiple search terms are used then objects will be returned in the list only if all the provided terms are matched.
-#     The search behavior may be restricted by prepending various characters to the search_fields.
-#     '^' Starts-with search.
-#     '=' Exact matches.
-#     '@' Full-text search. (Currently only supported Django's MySQL backend.)
-#     '$' Regex search.
-
-# For example:
-
-# search_fields = ('=username', '=email')
-
-    #queryset = ImagoMundi.objects.filter(place_of_origin=searchterm)
-
 
 def geocode(request):
-    print('gaat geocoden')
-
-    #results = ImagoMundi.objects.all()
-
     # geocode only fields that are still empty
     results = ImagoMundi.objects.filter(current_location_lat__isnull=True)
+    success_message = 'The following addresses were succesfully geocoded: \n\n'
+    warning_message = 'Geocoding did not succeed on the following addresses: \n\n'
 
     for result in results:
         try:
-            print(result.id)
-            print('database address: ' + result.address_current_location)
-
             geolocator = Nominatim(user_agent="ImagoMundi")
             location = geolocator.geocode(result.address_current_location)
             print(location.address)
             print((location.latitude, location.longitude))
-
             result.current_location_lat = location.latitude
             result.current_location_lng = location.longitude
             result.save()
+            success_message += ' ' + result.address_current_location + ' * '
 
         except:
-            print('decode error')
+            warning_message += ' ' + result.address_current_location + ' *  '
 
-    html = "<html><body>Geocode</body></html>"
-    return HttpResponse(html)
+    messages.add_message(request, messages.INFO, success_message)
+    messages.warning(request, warning_message)
+
+    # return to same page
+    return redirect(request.META['HTTP_REFERER'])

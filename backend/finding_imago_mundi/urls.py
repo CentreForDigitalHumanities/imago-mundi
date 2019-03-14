@@ -32,6 +32,8 @@ urlpatterns = [
         namespace='rest_framework',
     )),
     # temporally the geocode here
-    url(r'^geocode/', views.geocode, name='geocode'),
+    url(r'^admin/imago_mundi_app/imagomundi/geocode',
+        views.geocode, name='geocode'),
+    #url(r'^geocode/', views.geocode, name='geocode'),
     url(r'', index),  # catch-all; unknown paths to be handled by a SPA
 ]

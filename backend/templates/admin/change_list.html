@@ -40,6 +40,23 @@
 
 {% block content %}
 <div id="content-main">
+
+
+
+
+
+  <!-- extra button for geocoding -->
+
+  <div style="width: 400px;">
+    This will add Google lat-long coördinates, based on the current location address. It can take some time.
+    <form action="geocode" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="geocode_current_address" />
+      <input type="submit" name="Geocode" value="geocode addresses" />
+    </form>
+  </div>
+
+
   {% block object-tools %}
   <ul class="object-tools">
     {% block object-tools-items %}
@@ -88,4 +105,7 @@
     </form>
   </div>
 </div>
+
+
+
 {% endblock %}

@@ -81,12 +81,7 @@
             {% block object-tools %}{% endblock %}
             {{ content }}
             {% endblock %}
-            <!-- extra button for geocoding -->
-            <form action="geocode" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="geocode_current_address" />
-                <input type="submit" name="Geocode" value="Geocode" />
-            </form>
+
 
             {% block sidebar %}{% endblock %}
 

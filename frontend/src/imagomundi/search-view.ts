@@ -8,13 +8,6 @@ import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
 import { Model } from 'backbone';
-//import mapTemplate from './map-template'; gaat niet werken, moet vanuit typescript zelf
-//import { createClient, GoogleMapsClient, google } from '@google/maps';
-// declare var google;
-// import { google } from "google-maps";
-// import { } from '@types/googlemaps'; //wordt niet herkend dit moet nog: Add typeroots to your  tsconfig.json
-
-
 
 export default class SearchView extends View {
     template = searchTemplate;
@@ -31,24 +24,14 @@ export default class SearchView extends View {
     showabout: boolean = false;
     id_last: Number;
     detailsmodel: Model;
-    //intervalId: any;
-    // map: any; werkt niet om het global te maken, herkent de methods niet meer
-    // geocoder: any;
-
-    //googleMapsClient: GoogleMapsClient; dit werkt, maar is geen maps
-    //google: google;
-
-    //Todo: het typen van google lukt dus nog niet. 
 
     initialize() {
         this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
     }
 
     //general map
-    geocodeCurrentAddress() {
-
-        // var map = new google.maps.Map(document.getElementById("map"), { werkt ook
-        var map = new google.maps.Map($('#map').get(0), { //this is er van af, enkel dan herkent hij hem, waarschijnlijk omdat hij nu in de index staat. Todo: verplaatsen
+    markersCurrentAddress() {
+        var map = new google.maps.Map($('#map').get(0), {
             zoom: 4, //lager is verder weg
             maxZoom: 14, //zoom not further then this
             center: { lat: 51.4, lng: 11.4 }
@@ -69,10 +52,13 @@ export default class SearchView extends View {
 
         addresses_lat_lng = _.uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //vergelijkt de strings in het object houdt uniek over
         addresses_lat_lng = remove(addresses_lat_lng, function (n) { return n.lat != ""; });//remove if lat is empty
-
-        console.log(addresses_lat_lng);
-
         let i = 0;
+
+        //if no array is made
+        if (addresses_lat_lng.length < 1) {
+            return;
+        }
+
         let intervalIdCurrent = setInterval(function () {
 
             var Latlng = new google.maps.LatLng(addresses_lat_lng[i]);
@@ -84,16 +70,9 @@ export default class SearchView extends View {
             });
 
             bounds.extend(Latlng);
-
-            console.log('teller:')
-            console.log(i)
-            console.log('resultaat:')
-            console.log(addresses_lat_lng[i])
-
-            var content = "<b><font size='3'> " + addresses_lat_lng[i].title + "</font></b> <br><br>shelfmark:<br> <font size='1'>" + addresses_lat_lng[i].shelfmark + "</font><br><br> address:<br><font size='1'>" + addresses_lat_lng[i].address
-
+            var content = "<b><font size='3'> " + addresses_lat_lng[i].title + "</font></b> <br><br>shelfmark:<br> <font size='1'>" +
+                addresses_lat_lng[i].shelfmark + "</font><br><br> address:<br><font size='1'>" + addresses_lat_lng[i].address
             var infowindow = new google.maps.InfoWindow({
-                //content: results[0].formatted_address //todo, ook de titel en shelfmark meegeven, hoe als er meerder manuscripten zijn?
                 content: content
             });
 
@@ -103,18 +82,15 @@ export default class SearchView extends View {
                 }
             })(marker, i));
 
-
-
             if (i === addresses_lat_lng.length - 1) {
                 clearInterval(intervalIdCurrent);
             }
-            i++;
 
+            i++;
             map.fitBounds(bounds);
             map.panToBounds(bounds);
 
         }, 50);//set interval
-
     }
 
 
@@ -136,8 +112,8 @@ export default class SearchView extends View {
         let last_icon;
         let date_from;
         let date_until;
-        let icon_width = 40;
-        let icon_height = 40;
+        let icon_width = 45;
+        let icon_height = 45;
 
         var addresses_all = [
             detailsmodel['owner_and_location_1000_1100'],
@@ -177,7 +153,6 @@ export default class SearchView extends View {
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit, and create animation. 
         //Interval stops when address.lenght is reached
         let i = 0;
-
         let intervalId2 = setInterval(function () {
             let address;
 
@@ -186,8 +161,6 @@ export default class SearchView extends View {
                 icon_width = 45;
                 icon_height = 50;
             }
-
-
 
             if (i < (_.size(location_data))) {
 
@@ -278,7 +251,7 @@ export default class SearchView extends View {
                 console.log('gestopt en markers:');
                 console.log(bounds);
             }
-        }, 250);//set interval
+        }, 200);//set interval
 
         var legend = document.getElementById('legend_historical_addresses');
         for (var key in location_data) {
@@ -293,11 +266,7 @@ export default class SearchView extends View {
             div.innerHTML = '<img src="' + icon + '"> ' + period + until;
             legend.appendChild(div);
         }
-
     }
-
-
-
 
 
     search(event) {
@@ -318,17 +287,15 @@ export default class SearchView extends View {
         });
     }
 
-
     applyFilters() {
         this.collection.set(this.initialSearchCollection.models);//first reset to original collection
         this.filterCountryLanguage();
         this.filterDates();
         this.filterPlaceOfOriginCountry();
-        this.geocodeCurrentAddress();
+        this.markersCurrentAddress();
         return this.collection.toJSON();
     }
 
-    //todo: heeft weinig zin meer om de where zo complex te hebben met een and, kan net zo goed twee aparte functies voor country en language maken die collectie opnieuw setten
     filterCountryLanguage() {
         var current_location_country_value = this.$("#current_location_country").val();
         var language_value = this.$("#language").val();
@@ -371,7 +338,6 @@ export default class SearchView extends View {
         }
     }
 
-
     //just once called from imagomundi.ts, get collection to create dynamically the filter select options, and append the template
     render() {
         var self = this;
@@ -394,8 +360,6 @@ export default class SearchView extends View {
             error: function (collection, response, options) {
                 console.log("error");
             }
-
-
         });
 
         return this;
@@ -424,14 +388,15 @@ export default class SearchView extends View {
         this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
         this.$('#countresult').html("N = " + this.collection.toJSON().length);
         this.$('#titlebox').hide();//hide title to have more room for table
-
     }
-
 
     showDetails(event) {
         event.stopPropagation();// to prevent event bubbling: the parent elements must not be affected
         var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
         this.$('#' + this.id_last).removeClass("link_open");// 
+
+        console.log(id);
+        console.log(this.showdetails);
 
         if (this.showdetails == false || id != this.id_last) {
             this.showdetails = true;
@@ -443,14 +408,14 @@ export default class SearchView extends View {
             this.closeDetails(event);
         }
 
-
         this.id_last = id;
     }
 
+    //close details screen, but not when is clicked on table itself, or at the parts of the tabs
     closeDetails(event) {
-        //close details screen, but not when is clicked on table itself, or at the parts of the tabs
+
         if (event.target.className != '' && event.target.className != 'cell_content' &&
-            event.target.className != 'cell_title' && event.target.className != 'link_tab' && event.target.className[0] != "f" &&
+            event.target.className != 'cell_title' && event.target.className != 'link_tab' && event.target.className[0] != "i" &&
             event.target.className != 'gm-control-active' //the google map zoom button
         ) {
             this.$('#showdetails').empty();
@@ -536,7 +501,6 @@ export default class SearchView extends View {
 }
 
 
-//:not(.modal-imagomundi) werkte niet
 extend(SearchView.prototype, {
     template: searchTemplate,
     events: {
