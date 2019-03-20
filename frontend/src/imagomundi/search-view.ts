@@ -1,5 +1,5 @@
 
-import { extend, remove } from 'lodash';
+import { extend, remove, map as _map, size, filter, uniq, uniqBy } from 'lodash';
 import View from '../core/view';
 import resultTemplate from './searchresult-template';
 import searchTemplate from './search-template';
@@ -8,6 +8,10 @@ import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
 import { Model } from 'backbone';
+
+// declare module 'googlemaps';
+
+/// <reference path="<relevant path>/node_modules/@types/googlemaps/index.d.ts" />
 
 export default class SearchView extends View {
     template = searchTemplate;
@@ -40,7 +44,7 @@ export default class SearchView extends View {
         var addresses_lat_lng = [];
         let bounds = new google.maps.LatLngBounds();
 
-        addresses_lat_lng = _.map(this.collection.models, function (model) {
+        addresses_lat_lng = _map(this.collection.models, function (model) {
             var lat_lng = {};
             lat_lng['lat'] = Number(model.get('current_location_lat'));
             lat_lng['lng'] = Number(model.get('current_location_lng'));
@@ -50,7 +54,7 @@ export default class SearchView extends View {
             return lat_lng;
         });
 
-        addresses_lat_lng = _.uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //vergelijkt de strings in het object houdt uniek over
+        addresses_lat_lng = uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //vergelijkt de strings in het object houdt uniek over
         addresses_lat_lng = remove(addresses_lat_lng, function (n) { return n.lat != ""; });//remove if lat is empty
         let i = 0;
 
@@ -61,7 +65,8 @@ export default class SearchView extends View {
 
         let intervalIdCurrent = setInterval(function () {
 
-            var Latlng = new google.maps.LatLng(addresses_lat_lng[i]);
+            //console.log(addresses_lat_lng[i]['lat']);
+            var Latlng = new google.maps.LatLng(addresses_lat_lng[i]['lat'], addresses_lat_lng[i]['lng']);
             var marker = new google.maps.Marker({
                 map: map,
                 icon: 'http://maps.google.com/mapfiles/ms/icons/purple-pushpin.png',
@@ -151,28 +156,26 @@ export default class SearchView extends View {
         };
 
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit, and create animation. 
-        //Interval stops when address.lenght is reached
         let i = 0;
         let intervalId2 = setInterval(function () {
             let address;
 
             //last location is current location, somewhat larger icon
-            if (i == (_.size(location_data) - 1)) {
+            if (i == (size(location_data) - 1)) {
                 icon_width = 45;
                 icon_height = 50;
             }
 
-            if (i < (_.size(location_data))) {
+            if (i < (size(location_data))) {
 
                 console.log('i en size locationdata:')
                 console.log(i);
-                console.log(_.size(location_data));
-                //probleem blijkt: hij houdt niet altijd de volgorde aan. Het is async, dus gaat soms een latere locatie eerder, waardoor optelling niet meer klopt
+                console.log(size(location_data));
                 address = location_data[i].address;
 
                 geocoder.geocode({ 'address': address }, function (results, status) {
 
-                    if (status === 'OK') {
+                    if (status === google.maps.GeocoderStatus.OK) {
 
                         //add up the time periods if the manuscript stayed on one location during several periods
                         if (results[0].geometry.location.lat() == last_location_geocoding_lat && results[0].geometry.location.lng() == last_location_geocoding_lng) { //compare locations
@@ -193,7 +196,7 @@ export default class SearchView extends View {
                         }
 
                         //for current location, icon is always a special one.
-                        if (i == (_.size(location_data) - 1)) {
+                        if (i == (size(location_data) - 1)) {
                             icon = location_data[i].icon;
                         }
 
@@ -202,7 +205,7 @@ export default class SearchView extends View {
                             position: results[0].geometry.location,
                             title: results[0].formatted_address,
                             icon: { url: icon, scaledSize: new google.maps.Size(icon_width, icon_height), },
-                            zIndex: i //i as increasing index, current location must be on top
+                            zIndex: i //i as increasing index, current location marker must be on top
                         });
 
                         let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
@@ -221,7 +224,6 @@ export default class SearchView extends View {
                             content: "<b><font size='3'>" + date_from + "" + date_until + "</font></b> <br> " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom? Blijkt niet altijd in volgeorde te geocoden
                         });
 
-                        //infowindow.open(map, marker);
                         google.maps.event.addListener(marker, 'click', (function (marker) {
                             return function () {
                                 infowindow.open(map, marker);
@@ -238,7 +240,7 @@ export default class SearchView extends View {
                     last_date_from = date_from;
                     last_icon = icon;
 
-                    i++; //add only if there was geocoding, its async!
+                    i++; //add only if there was geocoding, its async
 
                     map.fitBounds(bounds);
                     map.panToBounds(bounds);
@@ -246,7 +248,7 @@ export default class SearchView extends View {
                 );//geocode
             }//if
 
-            if (i >= _.size(location_data) - 1) {
+            if (i >= size(location_data) - 1) {
                 clearInterval(intervalId2);
                 console.log('gestopt en markers:');
                 console.log(bounds);
@@ -270,15 +272,12 @@ export default class SearchView extends View {
 
 
     search(event) {
-        var self = this; // pass the class this as self, because jquery has its own 'this'
+        var self = this; // pass the class this as self, as jquery has its own 'this'
         event.preventDefault();
         this.collection.fetch({
             data: { search: this.$('#search').val() },
-            success: function (collection, response, options) { //de this.collection is hier al geupdated. Waarom wordt hij als parameter meegegeven?
-
-                self.initialSearchCollection = new Collection(collection.models);// dit is nodig omdat in javascript by reference wordt doorgegeven
-                // je kan dus niet zeggen self.initialSearchCollection=collection, dan is dat nl ook een referentie, 
-                // en verandert hij mee met de waarde van de collection
+            success: function (collection, response, options) {
+                self.initialSearchCollection = new Collection(collection.models);// collection is passed by reference, so it needs to be newly instantiated
                 self.applyFilters();
             },
             error: function (collection, response, options) {
@@ -326,7 +325,7 @@ export default class SearchView extends View {
             }
 
             this.collection.set(
-                _.filter(this.collection.models, function (model) { return model.get('date_from') > date_from_value && model.get('date_until') < date_until_value; })
+                filter(this.collection.models, function (model) { return model.get('date_from') > date_from_value && model.get('date_until') < date_until_value; })
             );
         }
     }
@@ -366,19 +365,19 @@ export default class SearchView extends View {
     }
 
     prepareCountriesFilter() {
-        this.current_location_countries = _.uniq(this.filterOptionsCollection.pluck("current_location_country"));//select attribute and keep unique
+        this.current_location_countries = uniq(this.filterOptionsCollection.pluck("current_location_country"));//select attribute and keep unique
         this.current_location_countries = remove(this.current_location_countries, function (n) { return n != ""; });//remove empty
         this.current_location_countries.sort();
     }
 
     prepareLanguagesFilter() {
-        this.languages = _.uniq(this.filterOptionsCollection.pluck("language"));
+        this.languages = uniq(this.filterOptionsCollection.pluck("language"));
         this.languages = remove(this.languages, function (n) { return n != ""; });//remove empty
         this.languages.sort();
     }
 
     preparePlacesOfOriginFilter() {
-        this.place_of_origin_country = _.uniq(this.filterOptionsCollection.pluck("place_of_origin_country"));//select attribute and keep unique
+        this.place_of_origin_country = uniq(this.filterOptionsCollection.pluck("place_of_origin_country"));//select attribute and keep unique
         this.place_of_origin_country = remove(this.place_of_origin_country, function (n) { return n != ""; });//remove empty
         this.place_of_origin_country.sort();
     }
