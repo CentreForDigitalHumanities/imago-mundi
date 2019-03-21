@@ -160,26 +160,27 @@ class ImagoMundiResource(resources.ModelResource):
 class ImagoMundiAdmin(ImportExportModelAdmin):
 
     resource_class = ImagoMundiResource
-    # change_list_template = "templates/admin/geocoding_button.html" vind hem niet, moet geimporteerd worden?
+    # override list template , with one that has a button to geocode. This triggers code in views.py
+    change_list_template = "../templates/admin/change_list.html"
 
     # meest duidelijk
     # http://books.agiliq.com/projects/django-admin-cookbook/en/latest/action_buttons.html
 
-    def get_urls(self):
-        from django.conf.urls import url
-        urls = super(ImagoMundiAdmin, self).get_urls()
-        urls += [
-            # was path in voorbeeld, is oud?
-            # hij herkent dit blijkbaar niet. Of moet er toch iets bij urls.py?
-            url(r'^geocode/$', self.geocode_current_address),
-        ]
-        return urls
+    # def get_urls(self):
+    #     from django.conf.urls import url
+    #     urls = super(ImagoMundiAdmin, self).get_urls()
+    #     urls += [
+    #         # was path in voorbeeld, is oud?
+    #         # hij herkent dit blijkbaar niet. Of moet er toch iets bij urls.py?
+    #         url(r'^geocode/$', self.geocode_current_address),
+    #     ]
+    #     return urls
 
-    def geocode_current_address(self, request):
-        print(request)
-        print('test')
-        self.message_user(request, "geocoded")
-        return HttpResponseRedirect("../")
+    # def geocode_current_address(self, request):
+    #     print(request)
+    #     print('test')
+    #     self.message_user(request, "geocoded")
+    #     return HttpResponseRedirect("../")
 
     # actions = ['geocode_current_address']
 
