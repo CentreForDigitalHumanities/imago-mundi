@@ -157,6 +157,7 @@ export default class SearchView extends View {
 
         //Iteration via set interval method, api call every so many miliseconds to prevent google limit, and create animation. 
         let i = 0;
+        let k = 0;
         let intervalId2 = setInterval(function () {
             let address;
 
@@ -246,9 +247,10 @@ export default class SearchView extends View {
                     map.panToBounds(bounds);
                 }
                 );//geocode
+                k++; // adds always
             }//if
 
-            if (i >= size(location_data) - 1) {
+            if (i >= size(location_data) - 1 || k > 20) { //21 march 19: added || k> 20 to prevent continuous looping 
                 clearInterval(intervalId2);
                 console.log('gestopt en markers:');
                 console.log(bounds);
