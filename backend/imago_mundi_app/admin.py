@@ -141,3 +141,4 @@ class ImagoMundiResource(resources.ModelResource):
 class ImagoMundiAdmin(ImportExportModelAdmin):
     # change_list_template = "../templates/admin/change_list.html" # dit werkt, maar je bent import export buttons kwijt, was omdat hij pas in tweede instantie de override doet
     resource_class = ImagoMundiResource
+    # pass
