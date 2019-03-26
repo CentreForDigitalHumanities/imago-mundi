@@ -51,10 +51,11 @@ export default class SearchView extends View {
             lat_lng['address'] = model.get('address_current_location');
             lat_lng['title'] = model.get('title');
             lat_lng['shelfmark'] = model.get('shelfmark');
+            lat_lng['id'] = model.get('id');
             return lat_lng;
         });
 
-        addresses_lat_lng = uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //vergelijkt de strings in het object houdt uniek over
+        addresses_lat_lng = uniqBy(addresses_lat_lng, (ll) => `${ll.lat};${ll.lng}`); // ll.lat + ';' + ll.lng //compares strings in object object, keeps unique
         addresses_lat_lng = remove(addresses_lat_lng, function (n) { return n.lat != ""; });//remove if lat is empty
         let i = 0;
 
@@ -63,6 +64,7 @@ export default class SearchView extends View {
             return;
         }
 
+        var self = this;
         let intervalIdCurrent = setInterval(function () {
 
             //console.log(addresses_lat_lng[i]['lat']);
@@ -81,9 +83,14 @@ export default class SearchView extends View {
                 content: content
             });
 
+
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
                     infowindow.open(map, marker);
+
+                    //26 maart: door klikken op marker details openen
+                    var id = addresses_lat_lng[i]['id']
+                    self.showDetailsfromMap(id);
                 }
             })(marker, i));
 
@@ -391,19 +398,16 @@ export default class SearchView extends View {
         this.$('#titlebox').hide();//hide title to have more room for table
     }
 
-    showDetails(event) {
+    showDetailsFromTable(event) {
         event.stopPropagation();// to prevent event bubbling: the parent elements must not be affected
         var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
         this.$('#' + this.id_last).removeClass("link_open");// 
 
-        console.log(id);
-        console.log(this.showdetails);
+        // console.log(id);
+        // console.log(this.showdetails);
 
         if (this.showdetails == false || id != this.id_last) {
-            this.showdetails = true;
-            this.detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
-            this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: this.detailsmodel[0] }));//object is multidimensional, so go one layer deeper
-            this.$('#' + id).addClass("link_open");
+            this.showDetails(id);
         }
         else {
             this.closeDetails(event);
@@ -412,9 +416,24 @@ export default class SearchView extends View {
         this.id_last = id;
     }
 
+    showDetailsfromMap(id) {
+        this.showDetails(id);
+        this.id_last = id;
+        //console.log(this.showdetails);
+    }
+
+    showDetails(id) {
+        this.showdetails = true;
+        this.detailsmodel = JSON.parse(JSON.stringify(this.collection.where({ id: id })));//json.parse turns json in an object
+        this.$('#showdetails').html(this.detailsTemplate({ detailsmodel: this.detailsmodel[0] }));//object is multidimensional, so go one layer deeper
+        this.$('#' + id).addClass("link_open");
+    }
+
+
     //close details screen, but not when is clicked on table itself, or at the parts of the tabs
     closeDetails(event) {
-
+        console.log('event is:')
+        console.log(event);
         if (event.target.className != '' && event.target.className != 'cell_content' &&
             event.target.className != 'cell_title' && event.target.className != 'link_tab' && event.target.className[0] != "i" &&
             event.target.className != 'gm-control-active' //the google map zoom button
@@ -512,7 +531,7 @@ extend(SearchView.prototype, {
         'change #language': 'applyFilters',
         'change #date_from': 'applyFilters',
         'change #date_until': 'applyFilters',
-        'click .details': 'showDetails',
+        'click .details': 'showDetailsFromTable',
         'click #help_button': 'showHelp',
         'click #close_button': 'closeHelp',
         'click .hero': 'closeDetails',
@@ -521,7 +540,8 @@ extend(SearchView.prototype, {
         'click #reset_button': 'resetFilters',
         'click .link_tab': 'changeTabs',
         'click #about_button': 'about',
-        'click #close_about_button': 'about'
+        'click #close_about_button': 'about',
+        'click #close_details_button': 'closeDetails',
 
     },
 });

@@ -1,7 +1,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Content ... -->
-<div class="container modal-imagomundi">
 
+
+<div class="container modal-imagomundi">
+    <button class="button is-small" id="close_details_button">X</button> <span
+        style="font-size: 1em; font-weight: bold; margin-left: auto; margin-right: 1%; ">{{detailsmodel.title}}</span>
+    <br>
     <div class="tabs is-boxed" style="margin-bottom: 0em;">
         <ul>
             <li class="tab is-active" id="li_content">
@@ -28,9 +32,6 @@
                     <span>Images</span>
                 </a>
             </li>
-
-            <span
-                style="font-size: 1em; font-weight: bold; margin-left: auto; margin-right: 1%; ">{{detailsmodel.title}}</span>
         </ul>
 
     </div>
@@ -140,12 +141,12 @@
 
             {{!-- Dit werkt, maar je hebt geen invloed op layout
 
-            {{#each detailsmodel}}
-            <tr>
-                <td>{{@key}}</td>
-                <td> {{this}}</td>
-            </tr>
-            {{/each}} --}}
+                {{#each detailsmodel}}
+                <tr>
+                    <td>{{@key}}</td>
+                    <td> {{this}}</td>
+                </tr>
+                {{/each}} --}}
         </table>
     </div>
     <div id="tab_details" class="content-tab" style="display:none">
