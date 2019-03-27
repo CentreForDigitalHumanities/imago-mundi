@@ -25,7 +25,7 @@ geopy==1.18.1
 jdcal==1.4                # via openpyxl
 more-itertools==5.0.0     # via pytest
 odfpy==1.4.0              # via tablib
-openpyxl==2.6.1           # via tablib
+openpyxl==2.5.14          # via tablib
 pathlib2==2.3.3           # via pytest
 pluggy==0.8.1             # via pytest
 psycopg2==2.7.6.1
