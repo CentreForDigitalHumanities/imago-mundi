@@ -3,7 +3,7 @@
 
 {% block bodyclass %}{{ block.super }} app-{{ app_label }}{% endblock %}
 
-{% if not is_popup %}
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -12,21 +12,12 @@
     {{ app.name }}
     {% endfor %}
 
-    <!-- extra button for geocoding -->
-
-
-
 </div>
-
 
 {% endblock %}
 
-
-{% endif %}
-
-
-
 {% block sidebar %}
+<!-- extra button for geocoding -->
 <div style="width: 400px;">
     This will add Google lat-long coördinates, based on the current location address. It can take some time.
     <form action="geocode" method="post">

@@ -45,8 +45,8 @@ class ImagoMundiViewSet(viewsets.ModelViewSet):
 
 def geocode(request):
     # tijdelijk
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    template_dir = os.path.join(base_dir, 'templates')
+    # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # template_dir = os.path.join(base_dir, 'templates')
     # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
     # print('template_dir:')
     # print(template_dir)
@@ -74,11 +74,11 @@ def geocode(request):
     messages.add_message(request, messages.INFO, success_message)
     messages.warning(request, warning_message)
 
-    # logger = logging.getLogger(__name__)
-    logging.basicConfig(filename='geocode.log', level=logging.CRITICAL)
-    logging.critical(
-        'Template dir ################################################################################################################:')
-    logging.critical(template_dir)
+    # # logger = logging.getLogger(__name__)
+    # logging.basicConfig(filename='geocode.log', level=logging.CRITICAL)
+    # logging.critical(
+    #     'Template dir ################################################################################################################:')
+    # logging.critical(template_dir)
 
     # return to same page
     return redirect(request.META['HTTP_REFERER'])
