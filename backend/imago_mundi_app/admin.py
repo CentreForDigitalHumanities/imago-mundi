@@ -83,7 +83,6 @@ class ImagoMundiResource(resources.ModelResource):
                            header="current_location_country")
         dataset.insert_col(4, col=["", ]*dataset.height,
                            header="current_location_town")
-
         dataset.insert_col(5, col=["", ]*dataset.height,
                            header="place_of_origin_country")
         dataset.insert_col(6, col=["", ]*dataset.height,
@@ -101,7 +100,6 @@ class ImagoMundiResource(resources.ModelResource):
             for r in (("\u2026", "..."), ("\u2013", "-"), ("\u010c", "C"),
                       ("\u011b", "e"), ("\u016f", "u"), ("\xc1", "A"),
                       ("\u0158", "R"), ("\u0159", "r"), ("\u2019", "'"),
-                      # TODO Beta teken nog een probleem, voorlopig zo
                       ("\u0153", "oe"), ("\u02da", ""), ("\u03b2", "B"),
                       ("\u0169", "u"), ("\u0303", "~"), ("\u204a", "&"),
                       ):
@@ -110,7 +108,6 @@ class ImagoMundiResource(resources.ModelResource):
             row[key] = value
 
         # split date in two columns. In before_import method already there are these extra columns inserted
-        #date = row['Date']
         date_split = row['Date'].split("-")
         if len(date_split) > 1:
             date_until = date_split[1]
@@ -139,6 +136,4 @@ class ImagoMundiResource(resources.ModelResource):
 
 @admin.register(ImagoMundi)
 class ImagoMundiAdmin(ImportExportModelAdmin):
-    # change_list_template = "../templates/admin/change_list.html" # dit werkt, maar je bent import export buttons kwijt, was omdat hij pas in tweede instantie de override doet
     resource_class = ImagoMundiResource
-    # pass

@@ -14,22 +14,15 @@ class ImagoMundi(models.Model):
     address_current_location = models.TextField(null=True, blank=True)
     place_id = models.CharField(
         max_length=200, null=True, blank=True)
-
-    # 13 maart
     current_location_lat = models.CharField(
         max_length=200, null=True, blank=True)
     current_location_lng = models.CharField(
         max_length=200, null=True, blank=True)
-
     place_of_origin = models.TextField(null=True, blank=True)
-
-    # toegevoegd 7 maart
     place_of_origin_country = models.CharField(
         max_length=200, null=True, blank=True)
     place_of_origin_town = models.CharField(
         max_length=200, null=True, blank=True)
-
-    # owner and location textvelden van gemaakt, bleek soms veel data te hebben
     owner_and_location_1000_1100 = models.TextField(null=True, blank=True)
     owner_and_location_1100_1200 = models.TextField(null=True, blank=True)
     owner_and_location_1200_1300 = models.TextField(null=True, blank=True)
@@ -40,9 +33,8 @@ class ImagoMundi(models.Model):
     owner_and_location_1700_1800 = models.TextField(null=True, blank=True)
     owner_and_location_1800_1900 = models.TextField(null=True, blank=True)
     owner_and_location_1900_2000 = models.TextField(null=True, blank=True)
-
     language = models.CharField(max_length=100, null=True, blank=True)
-    title = models.TextField(null=True, blank=True)  # textfield van gemaakt
+    title = models.TextField(null=True, blank=True)
     folia = models.CharField(max_length=100, null=True, blank=True)
     text_type = models.CharField(max_length=100, null=True, blank=True)
     chapters = models.CharField(max_length=100, null=True, blank=True)
@@ -52,10 +44,7 @@ class ImagoMundi(models.Model):
         max_length=200, null=True, blank=True)
     decorations = models.TextField(null=True, blank=True)
     manuscript_content = models.TextField(null=True, blank=True)
-
-    # toegevoegd
     images = models.TextField(null=True, blank=True)
-
     bibliography = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)

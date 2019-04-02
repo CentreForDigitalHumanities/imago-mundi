@@ -12,8 +12,6 @@ from django.contrib import messages
 import logging
 import os
 
-# Create your views here.
-
 
 class ImagoMundiViewSet(viewsets.ModelViewSet):
     """
@@ -44,14 +42,6 @@ class ImagoMundiViewSet(viewsets.ModelViewSet):
 
 
 def geocode(request):
-    # tijdelijk
-    # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # template_dir = os.path.join(base_dir, 'templates')
-    # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-    # print('template_dir:')
-    # print(template_dir)
-    # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-
     # geocode only fields that are still empty
     results = ImagoMundi.objects.filter(current_location_lat__isnull=True)
     success_message = 'The following addresses were succesfully geocoded: \n\n'
@@ -73,12 +63,4 @@ def geocode(request):
 
     messages.add_message(request, messages.INFO, success_message)
     messages.warning(request, warning_message)
-
-    # # logger = logging.getLogger(__name__)
-    # logging.basicConfig(filename='geocode.log', level=logging.CRITICAL)
-    # logging.critical(
-    #     'Template dir ################################################################################################################:')
-    # logging.critical(template_dir)
-
-    # return to same page
     return redirect(request.META['HTTP_REFERER'])

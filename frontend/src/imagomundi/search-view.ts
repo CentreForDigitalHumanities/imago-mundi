@@ -4,12 +4,11 @@ import View from '../core/view';
 import resultTemplate from './searchresult-template';
 import searchTemplate from './search-template';
 import aboutTemplate from './about-template';
+import helpTemplate from './help-template';
 import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
 import { Model } from 'backbone';
-
-// declare module 'googlemaps';
 
 /// <reference path="<relevant path>/node_modules/@types/googlemaps/index.d.ts" />
 
@@ -18,6 +17,7 @@ export default class SearchView extends View {
     resultTemplate = resultTemplate;
     detailsTemplate = detailsTemplate;
     aboutTemplate = aboutTemplate;
+    helpTemplate = helpTemplate;
     initialSearchCollection: Collection;
     filterOptionsCollection = new ImagoMundiCollection;
     current_location_countries: String[] = [];
@@ -36,7 +36,7 @@ export default class SearchView extends View {
     //general map
     markersCurrentAddress() {
         var map = new google.maps.Map($('#map').get(0), {
-            zoom: 4, //lager is verder weg
+            zoom: 4,
             maxZoom: 14, //zoom not further then this
             center: { lat: 51.4, lng: 11.4 }
         });
@@ -67,7 +67,6 @@ export default class SearchView extends View {
         var self = this;
         let intervalIdCurrent = setInterval(function () {
 
-            //console.log(addresses_lat_lng[i]['lat']);
             var Latlng = new google.maps.LatLng(addresses_lat_lng[i]['lat'], addresses_lat_lng[i]['lng']);
             var marker = new google.maps.Marker({
                 map: map,
@@ -87,8 +86,6 @@ export default class SearchView extends View {
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
                     infowindow.open(map, marker);
-
-                    //26 maart: door klikken op marker details openen
                     var id = addresses_lat_lng[i]['id']
                     self.showDetailsfromMap(id);
                 }
@@ -143,22 +140,27 @@ export default class SearchView extends View {
 
         var periods = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 'Current Location'];
         var marker_icons = [
-            'http://maps.google.com/mapfiles/ms/icons/purple.png',
-            'http://maps.google.com/mapfiles/ms/icons/purple.png',
-            'http://maps.google.com/mapfiles/ms/icons/blue.png',
-            'http://maps.google.com/mapfiles/ms/icons/blue.png',
-            'http://maps.google.com/mapfiles/ms/icons/lightblue.png',
-            'http://maps.google.com/mapfiles/ms/icons/lightblue.png',
-            'http://maps.google.com/mapfiles/ms/icons/green.png',
-            'http://maps.google.com/mapfiles/ms/icons/green.png',
-            'http://maps.google.com/mapfiles/ms/icons/orange.png',
-            'http://maps.google.com/mapfiles/ms/icons/orange.png',
-            'http://maps.google.com/mapfiles/ms/icons/red-pushpin.png'
+            'https://maps.google.com/mapfiles/ms/icons/purple.png',
+            'https://maps.google.com/mapfiles/ms/icons/purple.png',
+            'https://maps.google.com/mapfiles/ms/icons/blue.png',
+            'https://maps.google.com/mapfiles/ms/icons/blue.png',
+            'https://maps.google.com/mapfiles/ms/icons/lightblue.png',
+            'https://maps.google.com/mapfiles/ms/icons/lightblue.png',
+            'https://maps.google.com/mapfiles/ms/icons/green.png',
+            'https://maps.google.com/mapfiles/ms/icons/green.png',
+            'https://maps.google.com/mapfiles/ms/icons/orange.png',
+            'https://maps.google.com/mapfiles/ms/icons/orange.png',
+            'https://maps.google.com/mapfiles/ms/icons/red-pushpin.png'
         ];
 
         for (let k = 0; k < addresses_all.length; k++) {
+            var split_address = [];
             if (addresses_all[k] != null && addresses_all[k] != '?' && addresses_all[k] != '-' && addresses_all[k] != '') {
-                location_data.push({ 'address': addresses_all[k], 'period': periods[k], 'icon': marker_icons[k] });
+                //sometimes a column has multiple locations, seperated by a ;. 
+                split_address = addresses_all[k].split(';');
+                split_address.forEach(function (address) {
+                    location_data.push({ 'address': address, 'period': periods[k], 'icon': marker_icons[k] });
+                });
             }
         };
 
@@ -176,15 +178,11 @@ export default class SearchView extends View {
 
             if (i < (size(location_data))) {
 
-                console.log('i en size locationdata:')
-                console.log(i);
-                console.log(size(location_data));
                 address = location_data[i].address;
-
+                //console.log(location_data[i].address + "," + location_data[i].period + "," + location_data[i].icon)
                 geocoder.geocode({ 'address': address }, function (results, status) {
 
                     if (status === google.maps.GeocoderStatus.OK) {
-
                         //add up the time periods if the manuscript stayed on one location during several periods
                         if (results[0].geometry.location.lat() == last_location_geocoding_lat && results[0].geometry.location.lng() == last_location_geocoding_lng) { //compare locations
                             residence_duration = residence_duration + 100;
@@ -213,7 +211,7 @@ export default class SearchView extends View {
                             position: results[0].geometry.location,
                             title: results[0].formatted_address,
                             icon: { url: icon, scaledSize: new google.maps.Size(icon_width, icon_height), },
-                            zIndex: i //i as increasing index, current location marker must be on top
+                            zIndex: i //i as increasing index, current location marker must be on top of historical location marker
                         });
 
                         let loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
@@ -229,7 +227,7 @@ export default class SearchView extends View {
                         }
 
                         var infowindow = new google.maps.InfoWindow({
-                            content: "<b><font size='3'>" + date_from + "" + date_until + "</font></b> <br> " + results[0].formatted_address,// hij blijft hier soms zeggen dat niet defined, waarom? Blijkt niet altijd in volgeorde te geocoden
+                            content: "<b><font size='3'>" + date_from + "" + date_until + "</font></b> <br> " + results[0].formatted_address,
                         });
 
                         google.maps.event.addListener(marker, 'click', (function (marker) {
@@ -238,31 +236,31 @@ export default class SearchView extends View {
                             }
                         })(marker));
 
+                        //for use in next loop in order to compare with new location, set last geolocation
+                        last_location_geocoding_lat = results[0].geometry.location.lat();
+                        last_location_geocoding_lng = results[0].geometry.location.lng();
+                        last_date_from = date_from;
+                        last_icon = icon;
+
+                        map.fitBounds(bounds);
+                        map.panToBounds(bounds);
+
                     } else {
                         console.log('Geocode was not successful for the following reason: ' + status);
                     }
 
-                    //for use in next loop to compare with new location set last geolocation
-                    last_location_geocoding_lat = results[0].geometry.location.lat();
-                    last_location_geocoding_lng = results[0].geometry.location.lng();
-                    last_date_from = date_from;
-                    last_icon = icon;
-
-                    i++; //add only if there was geocoding, its async
-
-                    map.fitBounds(bounds);
-                    map.panToBounds(bounds);
+                    i++; //add only if geocoding was done, it's async
                 }
                 );//geocode
-                k++; // adds always
+                k++;
             }//if
 
-            if (i >= size(location_data) - 1 || k > 20) { //21 march 19: added || k> 20 to prevent continuous looping 
+            if (i >= size(location_data) - 1 || k > 20) { //k> 20 to prevent continuous looping, which paralyzes the whole application 
                 clearInterval(intervalId2);
-                console.log('gestopt en markers:');
-                console.log(bounds);
             }
-        }, 200);//set interval
+        }, 250);
+        //Set time interval. Live geocoding results quite easily in OVER_QUERY_LIMIT response from Google. 
+        //Time interval in between helps. More then 10 requests in a row hovever seems to require larger timeout interval
 
         var legend = document.getElementById('legend_historical_addresses');
         for (var key in location_data) {
@@ -278,7 +276,6 @@ export default class SearchView extends View {
             legend.appendChild(div);
         }
     }
-
 
     search(event) {
         var self = this; // pass the class this as self, as jquery has its own 'this'
@@ -319,7 +316,6 @@ export default class SearchView extends View {
 
         this.collection.set(this.collection.where(criteria));
     }
-
 
     filterDates() {
         let date_from_value = this.$("#date_from").val();
@@ -391,20 +387,24 @@ export default class SearchView extends View {
         this.place_of_origin_country.sort();
     }
 
-
     update_searchresult() {
-        this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
-        this.$('#countresult').html("N = " + this.collection.toJSON().length);
-        this.$('#titlebox').hide();//hide title to have more room for table
+        let countresult = this.collection.toJSON().length;
+
+        if (countresult > 0) {
+            this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
+            this.$('#countresult').html("N = " + countresult);
+            this.$('#titlebox').hide();//hide title to have more room for table
+        }
+        else {
+            this.$('#searchresult').html('<tr><td collspan="8"><div class="no_results">No result. Please change filters or search words.</div></td></tr>');
+        }
+
     }
 
     showDetailsFromTable(event) {
         event.stopPropagation();// to prevent event bubbling: the parent elements must not be affected
         var id = parseInt(event.currentTarget.id);//id is passed as string but is an int in collection
-        this.$('#' + this.id_last).removeClass("link_open");// 
-
-        // console.log(id);
-        // console.log(this.showdetails);
+        this.$('#' + this.id_last).removeClass("link_open");
 
         if (this.showdetails == false || id != this.id_last) {
             this.showDetails(id);
@@ -419,7 +419,6 @@ export default class SearchView extends View {
     showDetailsfromMap(id) {
         this.showDetails(id);
         this.id_last = id;
-        //console.log(this.showdetails);
     }
 
     showDetails(id) {
@@ -432,40 +431,32 @@ export default class SearchView extends View {
 
     //close details screen, but not when is clicked on table itself, or at the parts of the tabs
     closeDetails(event) {
-        console.log('event is:')
-        console.log(event);
         if (event.target.className != '' && event.target.className != 'cell_content' &&
             event.target.className != 'cell_title' && event.target.className != 'link_tab' && event.target.className[0] != "i" &&
-            event.target.className != 'gm-control-active' //the google map zoom button
+            event.target.className != 'gm-control-active' //the google map zoom button must stay clickable
         ) {
             this.$('#showdetails').empty();
             this.showdetails = false;
             this.$('#' + this.id_last).removeClass("link_open");//the oval around the 'i' to indicate to which line it belongs
         }
-        //console.log(event.target.className[0]); //geeft eerste letter classname
     }
 
 
-    about(event) {
-        if (this.showabout == false) {
-            this.showabout = true;
-            this.$('#about_modal').html(this.aboutTemplate({}));
-        }
-        else {
-            this.showabout = false;
-            this.$('#about_modal').empty();
-        }
-
-    }
-
-
-    showHelp(event) {
+    showModal(event) {
         event.preventDefault();
         this.$('.modal').addClass("is-active");
+
+        if (event.currentTarget.id == "help_button") {
+            this.$('#modal_content').html(this.helpTemplate({}));
+            this.$('#modal-card-title').html("Help");
+        }
+        if (event.currentTarget.id == "about_button") {
+            this.$('#modal_content').html(this.aboutTemplate({}));
+            this.$('#modal-card-title').html("about");
+        }
     }
 
-
-    closeHelp(event) {
+    closeModal(event) {
         event.preventDefault();
         this.$('.modal').removeClass("is-active");
     }
@@ -478,7 +469,6 @@ export default class SearchView extends View {
         $('#date_from').prop('selectedIndex', 0);
         $('#date_until').prop('selectedIndex', 0);
         this.applyFilters();
-        //console.log('reset button')
     }
 
     changeTabs(event) {
@@ -532,16 +522,14 @@ extend(SearchView.prototype, {
         'change #date_from': 'applyFilters',
         'change #date_until': 'applyFilters',
         'click .details': 'showDetailsFromTable',
-        'click #help_button': 'showHelp',
-        'click #close_button': 'closeHelp',
+        'click #help_button': 'showModal',
+        'click #close_button': 'closeModal',
         'click .hero': 'closeDetails',
         'click .title': 'closeDetails',
-        'click .modal-background': 'closeHelp',
+        'click .modal-background': 'closeModal',
         'click #reset_button': 'resetFilters',
         'click .link_tab': 'changeTabs',
-        'click #about_button': 'about',
-        'click #close_about_button': 'about',
+        'click #about_button': 'showModal',
         'click #close_details_button': 'closeDetails',
-
     },
 });
