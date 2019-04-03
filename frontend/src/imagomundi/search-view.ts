@@ -30,7 +30,7 @@ export default class SearchView extends View {
     detailsmodel: Model;
 
     initialize() {
-        this.listenTo(this.collection, 'update', this.update_searchresult); //als collection geupdated word,  method uitvoeren
+        this.listenTo(this.collection, 'update', this.update_searchresult); //if collection is updated, call this method
     }
 
     //general map
@@ -70,7 +70,7 @@ export default class SearchView extends View {
             var Latlng = new google.maps.LatLng(addresses_lat_lng[i]['lat'], addresses_lat_lng[i]['lng']);
             var marker = new google.maps.Marker({
                 map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/purple-pushpin.png',
+                icon: 'https://maps.google.com/mapfiles/ms/icons/purple-pushpin.png',
                 position: Latlng,
                 title: addresses_lat_lng[i].title
             });
@@ -81,7 +81,6 @@ export default class SearchView extends View {
             var infowindow = new google.maps.InfoWindow({
                 content: content
             });
-
 
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
@@ -103,7 +102,7 @@ export default class SearchView extends View {
     }
 
 
-    //details map
+    //details map, the historical locations are live geocoded
     geocodeHistoricalAddress(detailsmodel) {
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
             zoom: 5, //lower is a higher view
@@ -156,7 +155,7 @@ export default class SearchView extends View {
         for (let k = 0; k < addresses_all.length; k++) {
             var split_address = [];
             if (addresses_all[k] != null && addresses_all[k] != '?' && addresses_all[k] != '-' && addresses_all[k] != '') {
-                //sometimes a column has multiple locations, seperated by a ;. 
+                //sometimes a column has multiple locations, seperated by ';'. 
                 split_address = addresses_all[k].split(';');
                 split_address.forEach(function (address) {
                     location_data.push({ 'address': address, 'period': periods[k], 'icon': marker_icons[k] });
@@ -179,7 +178,6 @@ export default class SearchView extends View {
             if (i < (size(location_data))) {
 
                 address = location_data[i].address;
-                //console.log(location_data[i].address + "," + location_data[i].period + "," + location_data[i].icon)
                 geocoder.geocode({ 'address': address }, function (results, status) {
 
                     if (status === google.maps.GeocoderStatus.OK) {
@@ -342,7 +340,7 @@ export default class SearchView extends View {
         }
     }
 
-    //just once called from imagomundi.ts, get collection to create dynamically the filter select options, and append the template
+    //just once called from imagomundi.ts, get collection in order to create dynamically the filter select options, and append the template
     render() {
         var self = this;
         //async call 
@@ -357,7 +355,7 @@ export default class SearchView extends View {
                     countries_select: self.current_location_countries,
                     languages_select: self.languages,
                     countries_of_origin_select: self.place_of_origin_country,
-                    addresses: ['address1', 'addres2'],
+                    //addresses: ['address1', 'addres2'],
                 }));
 
             },
@@ -393,7 +391,7 @@ export default class SearchView extends View {
         if (countresult > 0) {
             this.$('#searchresult').html(this.resultTemplate({ results: this.collection.toJSON() }));
             this.$('#countresult').html("N = " + countresult);
-            this.$('#titlebox').hide();//hide title to have more room for table
+            this.$('#titlebox').hide();//hide title to create more room for table
         }
         else {
             this.$('#searchresult').html('<tr><td collspan="8"><div class="no_results">No result. Please change filters or search words.</div></td></tr>');
@@ -474,7 +472,7 @@ export default class SearchView extends View {
     changeTabs(event) {
         var id = event.currentTarget.id;
 
-        //first hide all content, remove is-active from tab
+        //first hide all content, remove 'is-active' from tab
         this.$('.content-tab').each(function (index, element) {
             $(element).hide();
         });
