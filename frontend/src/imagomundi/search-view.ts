@@ -343,7 +343,7 @@ export default class SearchView extends View {
     //just once called from imagomundi.ts, get collection in order to create dynamically the filter select options, and append the template
     render() {
         var self = this;
-        //async call 
+
         this.filterOptionsCollection.fetch({
             success: function (filterOptionsCollection, response, options) {
                 //filter unique on language and countrylocation 
@@ -355,7 +355,6 @@ export default class SearchView extends View {
                     countries_select: self.current_location_countries,
                     languages_select: self.languages,
                     countries_of_origin_select: self.place_of_origin_country,
-                    //addresses: ['address1', 'addres2'],
                 }));
 
             },
@@ -394,9 +393,8 @@ export default class SearchView extends View {
             this.$('#titlebox').hide();//hide title to create more room for table
         }
         else {
-            this.$('#searchresult').html('<tr><td collspan="8"><div class="no_results">No result. Please change filters or search words.</div></td></tr>');
+            this.$('#searchresult').html('<tr><td collspan="8"><div class="no_results">No results. Please change filters or search words.</div></td></tr>');
         }
-
     }
 
     showDetailsFromTable(event) {
