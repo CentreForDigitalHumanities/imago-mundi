@@ -26,6 +26,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# added by recommmendation after scan by Identity and Security Services informatiebeveiliging@uu.nl
+# Django documentation:
+# If this is set to True, client-side JavaScript will not to be able to access the session cookie.
+# There aren’t many good reasons for turning this off. Your code shouldn’t read session cookies from JavaScript.
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+
+# requires cookies to be ssl encrypted, con not to be used in local development without ssl
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 
