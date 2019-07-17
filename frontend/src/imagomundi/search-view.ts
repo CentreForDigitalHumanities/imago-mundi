@@ -448,7 +448,7 @@ export default class SearchView extends View {
         }
         if (event.currentTarget.id == "about_button") {
             this.$('#modal_content').html(this.aboutTemplate({}));
-            this.$('#modal-card-title').html("About the Images of the World Database");
+            this.$('#modal-card-title').html("");
         }
     }
 
