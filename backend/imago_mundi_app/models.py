@@ -37,11 +37,15 @@ class ImagoMundi(models.Model):
     title = models.TextField(null=True, blank=True)
     folia = models.CharField(max_length=100, null=True, blank=True)
     text_type = models.CharField(max_length=100, null=True, blank=True)
-    chapters = models.CharField(max_length=100, null=True, blank=True)
+    # 22-8-19 from charfield to textfield
+    chapters = models.TextField(null=True, blank=True)
+
     incipit = models.TextField(null=True, blank=True)
     explicit = models.TextField(null=True, blank=True)
-    attribution_of_author = models.CharField(
-        max_length=200, null=True, blank=True)
+
+    # 22-8-19 from charfield to textfield
+    attribution_of_author = models.TextField(null=True, blank=True)
+
     decorations = models.TextField(null=True, blank=True)
     manuscript_content = models.TextField(null=True, blank=True)
     images = models.TextField(null=True, blank=True)

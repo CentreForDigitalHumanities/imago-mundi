@@ -157,8 +157,11 @@ export default class SearchView extends View {
             if (addresses_all[k] != null && addresses_all[k] != '?' && addresses_all[k] != '-' && addresses_all[k] != '') {
                 //sometimes a column has multiple locations, seperated by ';'. 
                 split_address = addresses_all[k].split(';');
-                split_address.forEach(function (address) {
-                    location_data.push({ 'address': address, 'period': periods[k], 'icon': marker_icons[k] });
+                split_address.forEach(function (location_string) {
+
+                    //22-08-19 The location often contains a : to indicate a historical collection or building. Google maps gets confused. So leave everything after the : out, and use only the first part
+                    var address = location_string.split(':');
+                    location_data.push({ 'address': address[0], 'period': periods[k], 'icon': marker_icons[k] });
                 });
             }
         };
