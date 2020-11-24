@@ -9,6 +9,7 @@ import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
 import { Model } from 'backbone';
+import { Loader } from "@googlemaps/js-api-loader"
 
 /// <reference path="<relevant path>/node_modules/@types/googlemaps/index.d.ts" />
 
@@ -28,13 +29,22 @@ export default class SearchView extends View {
     showabout: boolean = false;
     id_last: Number;
     detailsmodel: Model;
+    googleLoader: Loader;
 
     initialize() {
+        const file = new File([''], 'gmaps_apikey')
+        const reader = new FileReader();
+        reader.readAsText(file);
+        const apiKey = String(reader.result);
+        this.googleLoader = new Loader({
+            apiKey: apiKey
+        });
         this.listenTo(this.collection, 'update', this.update_searchresult); //if collection is updated, call this method
     }
 
     //general map
-    markersCurrentAddress() {
+    async markersCurrentAddress() {
+        await this.googleLoader.load();
         var map = new google.maps.Map($('#map').get(0), {
             zoom: 4,
             maxZoom: 14, //zoom not further then this
