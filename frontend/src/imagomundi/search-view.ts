@@ -32,12 +32,10 @@ export default class SearchView extends View {
     googleLoader: Loader;
 
     initialize() {
-        const file = new File([''], 'gmaps_apikey')
-        const reader = new FileReader();
-        reader.readAsText(file);
-        const apiKey = String(reader.result);
+        const apiKey = new Model();
+        apiKey.fetch({url: '/api_key'});
         this.googleLoader = new Loader({
-            apiKey: apiKey
+            apiKey: apiKey.get('value')
         });
         this.listenTo(this.collection, 'update', this.update_searchresult); //if collection is updated, call this method
     }

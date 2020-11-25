@@ -37,6 +37,7 @@ CSRF_COOKIE_HTTPONLY = True
 #SESSION_COOKIE_SECURE = True
 #CSRF_COOKIE_SECURE = True
 
+GMAPS_APIKEY = os.environ.get('GMAPS_APIKEY', 'none')
 
 # Application definition
 
@@ -147,7 +148,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'imagomundi_2.log',
         },

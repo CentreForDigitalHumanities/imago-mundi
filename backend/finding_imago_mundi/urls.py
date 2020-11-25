@@ -37,5 +37,6 @@ urlpatterns = [
     url(r'^admin/imago_mundi_app/geocode',
         views.geocode, name='geocode'),
     #url(r'^geocode/', views.geocode, name='geocode'),
+    url(r'^api_key', views.get_api_key, name='apikey'),
     url(r'', index),  # catch-all; unknown paths to be handled by a SPA
 ]
