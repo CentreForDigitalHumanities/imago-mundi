@@ -30,14 +30,19 @@ export default class SearchView extends View {
     id_last: Number;
     detailsmodel: Model;
     googleLoader: Loader;
+    apiKey: Model;
 
     initialize() {
-        const apiKey = new Model();
-        apiKey.fetch({url: '/api_key'});
-        this.googleLoader = new Loader({
-            apiKey: apiKey.get('value')
-        });
+        this.apiKey = new Model();
+        this.apiKey.fetch({url: '/api_key'});
+        this.listenToOnce(this.apiKey, 'change', this.initLoader);    
         this.listenTo(this.collection, 'update', this.update_searchresult); //if collection is updated, call this method
+    }
+
+    initLoader() {
+        this.googleLoader = new Loader({
+            apiKey: this.apiKey.get('value')
+        });
     }
 
     //general map
