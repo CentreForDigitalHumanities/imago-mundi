@@ -116,7 +116,8 @@ export default class SearchView extends View {
 
 
     //details map, the historical locations are live geocoded
-    geocodeHistoricalAddress(detailsmodel) {
+   async geocodeHistoricalAddress(detailsmodel) {
+        await this.googleLoader.load();
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
             zoom: 5, //lower is a higher view
             maxZoom: 16, //zoom not further then this
