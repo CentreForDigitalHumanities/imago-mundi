@@ -1,4 +1,4 @@
-django<2.1
+django<2.3
 djangorestframework
 django-livereload-server
 psycopg2 --no-binary psycopg2
