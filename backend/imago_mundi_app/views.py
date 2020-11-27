@@ -1,16 +1,19 @@
-from django.shortcuts import render
+import logging
+import os
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.postgres.search import SearchQuery
+from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import viewsets
-from imago_mundi_app.models import ImagoMundi
-from imago_mundi_app.serializers import ImagoMundiSerializer
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework import filters
-from django.contrib.postgres.search import SearchQuery
-from django.shortcuts import redirect
 from geopy.geocoders import Nominatim
-from django.contrib import messages
-import logging
-import os
+
+from imago_mundi_app.models import ImagoMundi
+from imago_mundi_app.serializers import ImagoMundiSerializer
 
 
 class ImagoMundiViewSet(viewsets.ModelViewSet):
@@ -64,3 +67,7 @@ def geocode(request):
     messages.add_message(request, messages.INFO, success_message)
     messages.warning(request, warning_message)
     return redirect(request.META['HTTP_REFERER'])
+
+
+def get_api_key(request):
+    return JsonResponse({'value': settings.GMAPS_APIKEY})

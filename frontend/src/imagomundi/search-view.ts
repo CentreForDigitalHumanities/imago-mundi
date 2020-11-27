@@ -9,6 +9,7 @@ import Collection from '../core/collection';
 import ImagoMundiCollection from './imagomundi-collection';
 import detailsTemplate from './details-template';
 import { Model } from 'backbone';
+import { Loader } from "@googlemaps/js-api-loader"
 
 /// <reference path="<relevant path>/node_modules/@types/googlemaps/index.d.ts" />
 
@@ -28,13 +29,25 @@ export default class SearchView extends View {
     showabout: boolean = false;
     id_last: Number;
     detailsmodel: Model;
+    googleLoader: Loader;
+    apiKey: Model;
 
     initialize() {
+        this.apiKey = new Model();
+        this.apiKey.fetch({url: '/api_key'});
+        this.listenToOnce(this.apiKey, 'change', this.initLoader);    
         this.listenTo(this.collection, 'update', this.update_searchresult); //if collection is updated, call this method
     }
 
+    initLoader() {
+        this.googleLoader = new Loader({
+            apiKey: this.apiKey.get('value')
+        });
+    }
+
     //general map
-    markersCurrentAddress() {
+    async markersCurrentAddress() {
+        await this.googleLoader.load();
         var map = new google.maps.Map($('#map').get(0), {
             zoom: 4,
             maxZoom: 14, //zoom not further then this
@@ -103,7 +116,8 @@ export default class SearchView extends View {
 
 
     //details map, the historical locations are live geocoded
-    geocodeHistoricalAddress(detailsmodel) {
+   async geocodeHistoricalAddress(detailsmodel) {
+        await this.googleLoader.load();
         var map = new google.maps.Map($('#map_historical_addresses').get(0), {
             zoom: 5, //lower is a higher view
             maxZoom: 16, //zoom not further then this
