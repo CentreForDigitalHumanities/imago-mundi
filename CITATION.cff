@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: Finding Imago Mundi
+message: >-
+  Manuscript catalogue containing the Imago Mundi of Honorius Augustodunensis and its vernacular adaptations.
+type: software
+authors:
+  - name: >-
+      Research Software Lab, Centre for Digital Humanities,
+      Utrecht University
+    country: NL
+    city: Utrecht
+    website: >-
+      https://cdh.uu.nl/centre-for-digital-humanities/research-software-lab/
+repository-code: >-
+  https://github.com/UUDigitalHumanitieslab/finding_imago_mundi
+keywords:
+  - humanities
+  - manuscripts
+  - Europe
+  - GIS
+license: BSD-3-Clause
