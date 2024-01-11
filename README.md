@@ -1,7 +1,15 @@
-# finding imago mundi
+# Finding Imago Mundi
 
-database for imago mundi
+[![DOI](https://zenodo.org/badge/168309323.svg)](https://zenodo.org/doi/10.5281/zenodo.10490332)
 
+The application is hosted at:
+[imagomundi.hum.uu.nl](https://imagomundi.hum.uu.nl)
+
+The “Images of the World” Manuscripts Database of the Imago Mundi Tradition is part of the 3-year research project [Defining ‘Europe’ in Medieval European Geographical Discourse: the Image of the World and its Legacy, 1110-1500](https://definingeurope.sites.uu.nl/), funded by [the Netherlands Organisation for Scientific Research (NWO)](https://www.nwo.nl/en) under the [Innovational Research Incentives Scheme](https://www.nwo.nl/en/researchprogrammes/nwo-talent-programme) VENI. The project commenced on February 1, 2017, at [The Institute for Cultural Inquiry (ICON)](https://www.uu.nl/en/research/institute-for-cultural-inquiry), [Faculty of Humanities](https://www.uu.nl/en/organisation/faculty-of-humanities) at [Utrecht University](https://uu.nl).
+
+The database includes over 350 manuscripts containing the Imago Mundi of Honorius Augustodunensis and its vernacular adaptations. Manuscripts containing fragments, extracts, and extensive quotations in compilations are also included. Vernacular texts loosely based on the Imago mundi, as well as texts that constitute translations in the conventional sense of the word are included in the database. (For a full list of texts currently included, see below).
+
+The database is intended both a tool for researchers interested in the Imago Mundi tradition and a way of presenting the results of the Defining Europe project. One of the goals of the project is to establish how the medieval geographical definition of Europe as found in the Imago Mundi spread in the period 1110-1500. The dissemination of Honorius’s text through Europe is thus a central interest of the database. The manuscript catalogue presented in the database is thus complemented by an interactive map, permitting the user to track the historical locations of individual manuscripts (where known).
 
 ## Before you start
 
