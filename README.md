@@ -1,5 +1,7 @@
 # Finding Imago Mundi
 
+[![DOI](https://zenodo.org/badge/168309323.svg)](https://zenodo.org/doi/10.5281/zenodo.10490332)
+
 The application is hosted at:
 [imagomundi.hum.uu.nl](https://imagomundi.hum.uu.nl)
 
