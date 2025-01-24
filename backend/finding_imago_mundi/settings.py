@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'imagomundi',
         'USER': 'imagomundi',
-        'PASSWORD': 'root',
+        'PASSWORD': 'imagomundi',
         'HOST': 'localhost',
     }
 }
