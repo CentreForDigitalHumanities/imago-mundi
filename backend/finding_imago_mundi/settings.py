@@ -42,7 +42,6 @@ GMAPS_APIKEY = os.environ.get('GMAPS_APIKEY', 'none')
 # Application definition
 
 INSTALLED_APPS = [
-    'imago_mundi_app.apps.ImagoMundiAppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'import_export',
+    'imago_mundi_app',
 ]
 
 MIDDLEWARE = [
