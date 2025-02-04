@@ -38,7 +38,7 @@ CSRF_COOKIE_HTTPONLY = True
 #SESSION_COOKIE_SECURE = True
 #CSRF_COOKIE_SECURE = True
 
-GMAPS_APIKEY = os.environ.get('GMAPS_APIKEY', 'none')
+GMAPS_API_KEY = os.environ.get('GMAPS_API_KEY', 'none')
 
 ROOT_URLCONF = 'finding_imago_mundi.urls'
 

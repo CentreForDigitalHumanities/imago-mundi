@@ -28,7 +28,7 @@ You need to install the following software:
 [2]: https://pypi.org/project/selenium/#drivers
 
 For local development, you need to request an API key, and load it into your local env:
-`export GMAPS_APIKEY={your-api-key}`
+`export GMAPS_API_KEY={your-api-key}`
 Do this in the same shell as where you start the application.
 
 ## How it works
