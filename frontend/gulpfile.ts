@@ -17,8 +17,11 @@ import proxy = require('http-proxy-middleware');
 import del = require('del');
 import yargs = require('yargs');
 import glob = require('glob');
+
 import loadPlugins = require('gulp-load-plugins');
 const plugins = loadPlugins();
+
+const sass = require('gulp-sass')(require('sass'));
 
 type LibraryProps = {
     module: string,
@@ -230,7 +233,7 @@ gulp.task(STYLE, function() {
     if (production) postcssPlugins.push(cssnano());
     return gulp.src(mainStylesheet)
         .pipe(ifNotProd(plugins.sourcemaps.init()))
-        .pipe(plugins.sass({includePaths: [nodeDir]}))
+        .pipe(sass({includePaths: [nodeDir]}))
         .pipe(plugins.postcss(postcssPlugins))
         .pipe(plugins.rename(cssBundleName))
         .pipe(ifNotProd(plugins.sourcemaps.write('.')))

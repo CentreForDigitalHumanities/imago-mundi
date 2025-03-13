@@ -70,4 +70,4 @@ def geocode(request):
 
 
 def get_api_key(request):
-    return JsonResponse({'value': settings.GMAPS_APIKEY})
+    return JsonResponse({'value': settings.GMAPS_API_KEY})
