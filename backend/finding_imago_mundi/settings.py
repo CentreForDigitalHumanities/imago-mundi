@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+from finding_imago_mundi.common_settings import *
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -37,33 +38,7 @@ CSRF_COOKIE_HTTPONLY = True
 #SESSION_COOKIE_SECURE = True
 #CSRF_COOKIE_SECURE = True
 
-GMAPS_APIKEY = os.environ.get('GMAPS_APIKEY', 'none')
-
-# Application definition
-
-INSTALLED_APPS = [
-    'imago_mundi_app.apps.ImagoMundiAppConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'livereload',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'import_export',
-]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'livereload.middleware.LiveReloadScript',
-]
+GMAPS_API_KEY = os.environ.get('GMAPS_API_KEY', 'none')
 
 ROOT_URLCONF = 'finding_imago_mundi.urls'
 
@@ -86,6 +61,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'finding_imago_mundi.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -95,7 +72,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'imagomundi',
         'USER': 'imagomundi',
-        'PASSWORD': 'root',
+        'PASSWORD': 'imagomundi',
         'HOST': 'localhost',
     }
 }

@@ -4,338 +4,335 @@
 
 // Customizations for finding imago mundi: uncomment the modules that you need.
 
-@import "bulma/sass/utilities/_all"
-@import "bulma/sass/base/_all"
+@import "../../node_modules/bulma/sass/utilities/_all"
+@import "../../node_modules/bulma/sass/base/_all"
 
-// @import "bulma/sass/elements/box"
-@import "bulma/sass/elements/button"
-@import "bulma/sass/elements/container"
-// @import "bulma/sass/elements/content"
-@import "bulma/sass/form/_all"
-// @import "bulma/sass/elements/icon"
-// @import "bulma/sass/elements/image"
-// @import "bulma/sass/elements/notification"
-// @import "bulma/sass/elements/progress"
-@import "bulma/sass/elements/table"
-// @import "bulma/sass/elements/tag"
-@import "bulma/sass/elements/title"
-// @import "bulma/sass/elements/other"
+// @import "../../node_modules/bulma/sass/elements/box"
+@import "../../node_modules/bulma/sass/elements/button"
+@import "../../node_modules/bulma/sass/elements/container"
+// @import "../../node_modules/bulma/sass/elements/content"
+@import "../../node_modules/bulma/sass/form/_all"
+// @import "../../node_modules/bulma/sass/elements/icon"
+// @import "../../node_modules/bulma/sass/elements/image"
+// @import "../../node_modules/bulma/sass/elements/notification"
+// @import "../../node_modules/bulma/sass/elements/progress"
+@import "../../node_modules/bulma/sass/elements/table"
+// @import "../../node_modules/bulma/sass/elements/tag"
+@import "../../node_modules/bulma/sass/elements/title"
+// @import "../../node_modules/bulma/sass/elements/other"
 
-// @import "bulma/sass/components/breadcrumb"
-@import "bulma/sass/components/card"
-@import "bulma/sass/components/dropdown"
-// @import "bulma/sass/components/level"
-// @import "bulma/sass/components/media"
-// @import "bulma/sass/components/menu"
-// @import "bulma/sass/components/message"
-@import "bulma/sass/components/modal"
-@import "bulma/sass/components/navbar"
-// @import "bulma/sass/components/pagination"
-// @import "bulma/sass/components/panel"
-@import "bulma/sass/components/tabs"
+// @import "../../node_modules/bulma/sass/components/breadcrumb"
+@import "../../node_modules/bulma/sass/components/card"
+@import "../../node_modules/bulma/sass/components/dropdown"
+// @import "../../node_modules/bulma/sass/components/level"
+// @import "../../node_modules/bulma/sass/components/media"
+// @import "../../node_modules/bulma/sass/components/menu"
+// @import "../../node_modules/bulma/sass/components/message"
+@import "../../node_modules/bulma/sass/components/modal"
+@import "../../node_modules/bulma/sass/components/navbar"
+// @import "../../node_modules/bulma/sass/components/pagination"
+// @import "../../node_modules/bulma/sass/components/panel"
+@import "../../node_modules/bulma/sass/components/tabs"
 
-@import "bulma/sass/grid/columns"
-// @import "bulma/sass/grid/tiles"
+@import "../../node_modules/bulma/sass/grid/columns"
+// @import "../../node_modules/bulma/sass/grid/tiles"
 
-@import "bulma/sass/layout/hero"
-// @import "bulma/sass/layout/section"
-// @import "bulma/sass/layout/footer"
+@import "../../node_modules/bulma/sass/layout/hero"
+// @import "../../node_modules/bulma/sass/layout/section"
+// @import "../../node_modules/bulma/sass/layout/footer"
 
 
 
 .imagomundi_background
-    :background-image url("image/Background_Natalia1.PNG")
-    :background-repeat repeat-y
-    :background-size 100%
-    :background-color: #092165
-    
+    background-image: url("image/Background_Natalia1.PNG")
+    background-repeat: repeat-y
+    background-size: 100%
+    background-color: #092165
+
 @media only screen and (max-width: 800px)
     .imagomundi_background
-        :background-repeat no-repeat
-        :background-size 100%
+        background-repeat: no-repeat
+        background-size: 100%
 
 
 .modal-imagomundi
-    :left 20%  
-    :top 10%
-    :border-radius 5px
-    :padding 5px
-    :margin 10px
-    :background #f7daaf
-    :position fixed
-    :width 60%
-    :z-index 100
-    :overflow auto
+    left: 20%
+    top: 10%
+    border-radius: 5px
+    padding: 5px
+    margin: 10px
+    background: #f7daaf
+    position: fixed
+    width: 60%
+    z-index: 100
+    overflow: auto
 
 #close_details_button
-    :color #fff
-    :background-color #FCC66A
-    :top -1px
-    :border-radius 8px
+    color: #fff
+    background-color: #FCC66A
+    top: -1px
+    border-radius: 8px
 
-@media only screen and (max-width: 1500px) 
+@media only screen and (max-width: 1500px)
     .modal-imagomundi
-        :top 5%
-        :width 80%
-        :left 10%
+        top: 5%
+        width: 80%
+        left: 10%
 
 
-@media only screen and (max-width: 1100px) 
+@media only screen and (max-width: 1100px)
     .modal-imagomundi
-        :top 5%
-        :width 85%
-        :left 10% 
+        top: 5%
+        width: 85%
+        left: 10%
 
 
 .modal-imagomundi .table
-    :color #000
-    :background #fff
-    :font-size 12px
-    :line-height 13px
+    color: #000
+    background: #fff
+    font-size: 12px
+    line-height: 13px
 
 .modal-imagomundi .table td
-    :padding-top 0.4em
-    :padding-bottom 0.4em
-    :padding-left 0.8em
-    :padding-right 0.8em
+    padding-top: 0.4em
+    padding-bottom: 0.4em
+    padding-left: 0.8em
+    padding-right: 0.8em
 
-.is-active a 
-    :color #ad2500 !important
+.is-active a
+    color: #ad2500 !important
 
 
 .cell_content
-    :font-size 14px !important
-    :line-height 14px
-    :padding-bottom 0.4em !important
+    font-size: 14px !important
+    line-height: 14px
+    padding-bottom: 0.4em !important
 
 .cell_title
-    :padding-top 1em !important
-    :padding-bottom 0.4em !important
-    :font-size 14px !important
-    :font-weight bold
+    padding-top: 1em !important
+    padding-bottom: 0.4em !important
+    font-size: 14px !important
+    font-weight: bold
 
 .search_help
-    :visibility hidden
-    :height: 
+    visibility: hidden
 
 .titlebox
-    :margin-top 2%
+    margin-top: 2%
 
-.titlebox h1 
-    :font-size 4em
-    :color #fff
+.titlebox h1
+    font-size: 4em
+    color: #fff
 
 .titlebox h2
-     :font-size 2em
-     :color #fcd8c9
+     font-size: 2em
+     color: #fcd8c9
 
 .title
-    :font-size 0.9em
-    :font-weight bold
+    font-size: 0.9em
+    font-weight: bold
 
 #search-form
-    :padding 30px
+    padding: 30px
 
 @media only screen and (max-width: 800px)
     #search-form
-        :max-width 600px
+        max-width: 600px
 
 
 @media only screen and (max-width: 600px)
     #search-form
-        :max-width 500px
+        max-width: 500px
 
-    
+
 @media only screen and (max-width: 450px)
     #search-form
-        :max-width 400px
+        max-width: 400px
 
 
 .imagomundi_search_combi
-    :max-width 552px
+    max-width: 552px
 
 a.details
-    :padding-left 10px
-    :padding-right 10px
-    :height 15px
+    padding-left: 10px
+    padding-right: 10px
+    height: 15px
 
 .link_open
-    :background #f7daaf
-    :border-radius 20px
-    :padding 5px
+    background: #f7daaf
+    border-radius: 20px
+    padding: 5px
 
 .fa-info
-    :color #AA4823
+    color: #AA4823
 
 .fa-info:hover
-    :color red
+    color: red
 
 #search_button
-    :background #f7ac22
+    background: #f7ac22
 
 #search_button:hover
-    :background #FCC66A
+    background: #FCC66A
 
 #reset_button
-    :background #ce3a04
+    background: #ce3a04
 
 #reset_button:hover
-    :background #dd5523 
+    background: #dd5523
 
 
 #searchresult
-    :font-size 0.9em
-    :background #fcf8f2
+    font-size: 0.9em
+    background: #fcf8f2
 
-#map 
-    :height 450px
+#map
+    height: 450px
 
 @media only screen and (max-width: 800px)
-    #map 
-        :height 250px
+    #map
+        height: 250px
 
 @media only screen and (max-width: 500px)
-    #map 
-        :height 170px
+    #map
+        height: 170px
 
 
 #map_historical_addresses
-    :height 500px
-    :width 88%
-    :float left
+    height: 500px
+    width: 88%
+    float: left
 
 @media only screen and (max-width: 800px)
     #map_historical_addresses
-        :height 300px
+        height: 300px
 
 #legend_historical_addresses
-    :height 500px
-    :width 12%
-    :float right
-    :background #fff
+    height: 500px
+    width: 12%
+    float: right
+    background: #fff
 
 @media only screen and (max-width: 800px)
     #legend_historical_addresses
-        :height 300px
+        height: 300px
 
-    
+
 #legend_historical_addresses div
-    :background #fff
-    :padding 5px
-    :font-size 10px
+    background: #fff
+    padding: 5px
+    font-size: 10px
 
 #about_button
-    :background #c94504
+    background: #c94504
 
 #about_button:hover
-    :background #db6023
+    background: #db6023
 
 .about_page
-    :left 20%
-    :border-radius 5px
-    :padding 25px
-    :margin 10px
-    :background #fff
-    :position absolute
-    :width 60%
-    :z-index 100
-    :overflow auto
+    left: 20%
+    border-radius: 5px
+    padding: 25px
+    margin: 10px
+    background: #fff
+    position: absolute
+    width: 60%
+    z-index: 100
+    overflow: auto
 
 @media only screen and (max-width: 1500px)
     .about_page
-        :width 75%
-        :left 0%
+        width: 75%
+        left: 0%
 
 @media only screen and (max-width: 800px)
      .about_page
-        :width 93%
-        :left 0%
-            
+        width: 93%
+        left: 0%
 
-.about_page h1 
-    :font-size 1.5em
-    :line-height 2em
+
+.about_page h1
+    font-size: 1.5em
+    line-height: 2em
 
 .about_page p
-    :padding-bottom 15px
+    padding-bottom: 15px
 
 @media only screen and (max-width: 800px)
     .table td
-        :font-size 11px
-        :padding 0.2em 0.2em
+        font-size: 11px
+        padding: 0.2em 0.2em
 
     .table th
-        :font-size 11px
+        font-size: 11px
 
 @media only screen and (max-width: 500px)
     .table td
-        :font-size 9px
-        :padding 0.2em 0.2em
+        font-size: 9px
+        padding: 0.2em 0.2em
 
     .table th
-        :font-size 9px
+        font-size: 9px
 
 
 #dh_logo
-    :background-image url("image/LogoLab678x141.png")
-    :height 47px
-    :width 226px
-    :background-size 100%
-    :position relative
-    :margin auto
-    :z-index 10
+    background-image: url("image/LogoLab678x141.png")
+    height: 47px
+    width: 226px
+    background-size: 100%
+    position: relative
+    margin: auto
+    z-index: 10
 
 .no_results
-    :font-size 1.1em
-    :text-align: center;
-
-.modal-card 
+    font-size: 1.1em
+    text-align: center
 
 .about_body
-    :padding-top 8px
+    padding-top: 8px
 
 .about_body h1
-    :font-size 26px
-    :margin-bottom 12px
+    font-size: 26px
+    margin-bottom: 12px
 
 .about_body h2
-    :font-size 22px
-    :margin-top 4px
-    :margin-bottom 6px
+    font-size: 22px
+    margin-top: 4px
+    margin-bottom: 6px
 
 .about_body h3
-    :font-size 20px
-    :margin-top 4px
-    :margin-bottom 6px
+    font-size: 20px
+    margin-top: 4px
+    margin-bottom: 6px
 
 .about_body h4
-    :font-size 14px
-    :margin-top 18px
-    :margin-bottom 4px
-    :font-weight bold
+    font-size: 14px
+    margin-top: 18px
+    margin-bottom: 4px
+    font-weight: bold
 
 .about_body p
-    :font-size 13px
-    :margin-bottom 15px
+    font-size: 13px
+    margin-bottom: 15px
 
 .about_body a
-    :text-decoration underline
-    :font-style italic
+    text-decoration: underline
+    font-style: italic
 
 ul
-    :list-style-type disc 
-    :font-size 12px
-    :list-style-position inside
+    list-style-type: disc
+    font-size: 12px
+    list-style-position: inside
 
 .help_body p
-    :font-size 15px
-    :margin-bottom 15px
+    font-size: 15px
+    margin-bottom: 15px
 
 ol li
-    :font-size 12px
-    :margin-bottom 8px
-    :list-style-type none
+    font-size: 12px
+    margin-bottom: 8px
+    list-style-type: none
 
 ol li i
-    :margin-top 18px
-    :font-size 13px
+    margin-top: 18px
+    font-size: 13px
